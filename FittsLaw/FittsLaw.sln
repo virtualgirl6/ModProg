@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FittsLaw", "FittsLaw\FittsLaw.csproj", "{D191E8D7-2342-4D15-B21A-323507D9A773}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|anycpu = Debug|anycpu
+		Release|anycpu = Release|anycpu
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Debug|anycpu.ActiveCfg = Debug|anycpu
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Debug|anycpu.Build.0 = Debug|anycpu
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Release|anycpu.ActiveCfg = Release|anycpu
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Release|anycpu.Build.0 = Release|anycpu
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Debug|x86.ActiveCfg = Debug|x86
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Debug|x86.Build.0 = Debug|x86
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Release|x86.ActiveCfg = Release|x86
+		{D191E8D7-2342-4D15-B21A-323507D9A773}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+EndGlobal

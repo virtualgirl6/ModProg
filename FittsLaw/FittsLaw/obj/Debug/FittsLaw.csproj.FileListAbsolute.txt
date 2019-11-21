@@ -1,0 +1,5 @@
+/Users/victoriabosch/GitHub/ModProg/FittsLaw/FittsLaw/bin/Debug/FittsLaw.exe
+/Users/victoriabosch/GitHub/ModProg/FittsLaw/FittsLaw/bin/Debug/FittsLaw.pdb
+/Users/victoriabosch/GitHub/ModProg/FittsLaw/FittsLaw/obj/Debug/FittsLaw.csprojAssemblyReference.cache
+/Users/victoriabosch/GitHub/ModProg/FittsLaw/FittsLaw/obj/Debug/FittsLaw.exe
+/Users/victoriabosch/GitHub/ModProg/FittsLaw/FittsLaw/obj/Debug/FittsLaw.pdb

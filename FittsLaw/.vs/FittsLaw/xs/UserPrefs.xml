@@ -1,0 +1,25 @@
+﻿<Properties StartupConfiguration="{D191E8D7-2342-4D15-B21A-323507D9A773}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="FittsLaw/Program.cs">
+    <Files>
+      <File FileName="FittsLaw/Program.cs" Line="34" Column="32" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="FittsLaw" expanded="True">
+            <Node name="FittsLaw" expanded="True">
+              <Node name="Program.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.FittsLaw PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
