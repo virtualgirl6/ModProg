@@ -84,8 +84,8 @@ namespace Mandelbrot
             Controls.Add(okButton);
 
             maxiteratie = 50;
-            xmidden = 250;
-            ymidden = 250;
+            xmidden = 250.0;
+            ymidden = 250.0;
 
             this.Paint += Tekenmap;
             okButton.Click += KlikOK;
@@ -101,7 +101,8 @@ namespace Mandelbrot
 
             try
             {
-                
+                    //zoom
+                    xmidden = double.Parse(txtMiddenX.Text);
                     ymidden = double.Parse(txtMiddenY.Text);
                     maxiteratie = int.Parse(txtMax.Text);
                 
@@ -110,7 +111,6 @@ namespace Mandelbrot
             {
                 Console.WriteLine(ex);
             }
-                
 
             this.Invalidate();
         }
@@ -118,9 +118,9 @@ namespace Mandelbrot
 
         public void Tekenmap(Object obj, PaintEventArgs pea)
         {
-            for (int x = 0; x < 500; x++)
+            for (double x = 0; x < 500; x++)
             {
-                for (int y = 0; y < 500; y++)
+                for (double y = 0; y < 500; y++)
                 {
                     double a = 0;
                     double b = 0;
@@ -147,10 +147,10 @@ namespace Mandelbrot
                         if (afstand > 2)
                         {
                             if (iteratie % 2 == 0)
-                                pea.Graphics.FillRectangle(Brushes.DarkRed, x + 100, y + 150, 1, 1);
+                                pea.Graphics.FillRectangle(Brushes.DarkRed, (int)x + 100, (int)y + 150, 1, 1);
                                 
                             if (iteratie%2 != 0)
-                                pea.Graphics.FillRectangle(Brushes.Black, x + 100, y + 150, 1, 1);
+                                pea.Graphics.FillRectangle(Brushes.Black, (int)x + 100, (int)y + 150, 1, 1);
                             break;
                         }
                         
