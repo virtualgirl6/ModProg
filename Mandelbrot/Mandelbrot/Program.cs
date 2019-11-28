@@ -8,7 +8,9 @@ namespace Mandelbrot
 
     class Mandel : Form
     {
-        
+
+        Button okButton = new Button();
+
         TextBox txtMiddenX = new TextBox();
         TextBox txtMiddenY = new TextBox();
         TextBox txtSchaal = new TextBox();
@@ -18,14 +20,12 @@ namespace Mandelbrot
         Label midYLabel = new Label();
         Label schaalLabel = new Label();
         Label maxLabel = new Label();
-        Button okButton = new Button();
 
         //Panel plaatje = new Panel();
 
-
-
         int maxiteratie;
-        double xmidden, ymidden;
+        double xmidden, ymidden, zoomfactor;
+
 
 
         public Mandel()
@@ -86,6 +86,7 @@ namespace Mandelbrot
             maxiteratie = 50;
             xmidden = 250.0;
             ymidden = 250.0;
+            zoomfactor = 100.0;
 
             this.Paint += Tekenmap;
             okButton.Click += KlikOK;
@@ -101,10 +102,10 @@ namespace Mandelbrot
 
             try
             {
-                    //zoom
-                    xmidden = double.Parse(txtMiddenX.Text);
-                    ymidden = double.Parse(txtMiddenY.Text);
-                    maxiteratie = int.Parse(txtMax.Text);
+                zoomfactor = double.Parse(txtSchaal.Text);
+                xmidden = double.Parse(txtMiddenX.Text);
+                ymidden = double.Parse(txtMiddenY.Text);
+                maxiteratie = int.Parse(txtMax.Text);
                 
             }
             catch (Exception ex)
@@ -127,8 +128,8 @@ namespace Mandelbrot
                     double aa = 0;
                     double bb = 0;
 
-                    double xzoom = ((x - xmidden) / 100.0);
-                    double yzoom = ((y - ymidden) / 100.0);
+                    double xzoom = ((x - xmidden) / zoomfactor);
+                    double yzoom = ((y - ymidden) / zoomfactor);
                     
                     for (int iteratie = 0;  iteratie <= maxiteratie; iteratie ++)
                     {
