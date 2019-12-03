@@ -2,6 +2,21 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+/* -----------------
+ * TO DO
+
+    klik & Zoom werkend (meeschalen)
+
+    variabelnamen waar nodig duidelijker
+    KLeuren methode + implementatie
+    box dropdown
+        presets in box dropdown
+
+    extras (e.g. met + en - knopje zoomen */
+
+
+
+
 
 namespace Mandelbrot
 {
@@ -14,10 +29,10 @@ namespace Mandelbrot
         Button okButton = new Button();
         
 
-        TextBox txtMiddenX = new TextBox();
-        TextBox txtMiddenY = new TextBox();
-        TextBox txtSchaal = new TextBox();
-        TextBox txtMax = new TextBox();
+        TextBox txtboxMidX = new TextBox();
+        TextBox txtboxMidY = new TextBox();
+        TextBox txtboxSchaal = new TextBox();
+        TextBox txtboxMax = new TextBox();
 
         Label midXLabel = new Label();
         Label midYLabel = new Label();
@@ -56,32 +71,32 @@ namespace Mandelbrot
             midXLabel.Size = new Size(70, txtHoogte);
             midXLabel.Text = "Midden X:";
 
-            txtMiddenX.Location = new Point(80, 30);
-            txtMiddenX.Size = new Size(txtboxLengte, txtHoogte);
+            txtboxMidX.Location = new Point(80, 30);
+            txtboxMidX.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak Midden Y
             midYLabel.Location = new Point(10, 70);
             midYLabel.Size = new Size(70, txtHoogte);
             midYLabel.Text = "Midden Y:";
 
-            txtMiddenY.Location = new Point(80, 70);
-            txtMiddenY.Size = new Size(txtboxLengte, txtHoogte);
+            txtboxMidY.Location = new Point(80, 70);
+            txtboxMidY.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak Schaal
             schaalLabel.Location = new Point(220, 30);
             schaalLabel.Size = new Size(35, txtHoogte);
             schaalLabel.Text = "Schaal:";
 
-            txtSchaal.Location = new Point(270, 30);
-            txtSchaal.Size = new Size(txtboxLengte, txtHoogte);
+            txtboxSchaal.Location = new Point(270, 30);
+            txtboxSchaal.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak max
             maxLabel.Location = new Point(220, 70);
             maxLabel.Size = new Size(30, txtHoogte);
             maxLabel.Text = "Max:";
 
-            txtMax.Location = new Point(270, 70);
-            txtMax.Size = new Size(txtboxLengte, txtHoogte);
+            txtboxMax.Location = new Point(270, 70);
+            txtboxMax.Size = new Size(txtboxLengte, txtHoogte);
 
             //opmaak panel
             panel.Size = new Size(500, 500);
@@ -96,13 +111,13 @@ namespace Mandelbrot
             Controls.Add(menu);
             Controls.Add(panel);
             Controls.Add(midXLabel);
-            Controls.Add(txtMiddenX);
+            Controls.Add(txtboxMidX);
             Controls.Add(midYLabel);
-            Controls.Add(txtMiddenY);
+            Controls.Add(txtboxMidY);
             Controls.Add(schaalLabel);
-            Controls.Add(txtSchaal);
+            Controls.Add(txtboxSchaal);
             Controls.Add(maxLabel);
-            Controls.Add(txtMax);
+            Controls.Add(txtboxMax);
             Controls.Add(okButton);
 
             // beginsettings
@@ -130,11 +145,11 @@ namespace Mandelbrot
 
             try
             {
-                zoomfactor = Convert.ToDouble(txtSchaal.Text);
+                zoomfactor = Convert.ToDouble(txtboxSchaal.Text);
                 //zoomfactor = double.Parse(txtSchaal.Text);
-                xMidden = Convert.ToDouble(txtMiddenX.Text);
-                yMidden = Convert.ToDouble(txtMiddenY.Text);
-                maxIteratie = Convert.ToInt32(txtMax.Text);
+                xMidden = Convert.ToDouble(txtboxMidX.Text);
+                yMidden = Convert.ToDouble(txtboxMidY.Text);
+                maxIteratie = Convert.ToInt32(txtboxMax.Text);
             }
             catch (Exception ex)
             {
@@ -166,9 +181,9 @@ namespace Mandelbrot
             xMidden = ((panel.Width) - mandelMuisX);
             yMidden = ((panel.Height) - mandelMuisY);
 
-            txtMiddenX.Text = Convert.ToString(xMidden);
-            txtMiddenY.Text = Convert.ToString(yMidden);
-            txtSchaal.Text = Convert.ToString(zoomfactor);
+            txtboxMidX.Text = Convert.ToString(xMidden);
+            txtboxMidY.Text = Convert.ToString(yMidden);
+            txtboxSchaal.Text = Convert.ToString(zoomfactor);
 
             panel.Invalidate();
 
@@ -177,10 +192,8 @@ namespace Mandelbrot
         public void Klikdubbel(object o, MouseEventArgs e) //misschien - knopje?
         {
             zoomfactor /= 2;
-            txtSchaal.Text = Convert.ToString(zoomfactor);
+            txtboxSchaal.Text = Convert.ToString(zoomfactor);
             panel.Invalidate();
-
-
 
         }
 
