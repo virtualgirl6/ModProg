@@ -109,13 +109,14 @@ namespace Mandelbrot
             maxIteratie = 50;
             xMidden = 250.0;
             yMidden = 250.0;
-            zoomfactor = 100.0;
-            ratio = zoomfactor / 100;
+            zoomfactor = 0.01;
+            ratio = zoomfactor / 0.01;
 
             //eventhandlers
             panel.Paint += Tekenmap;
             okButton.Click += KlikOK;
-            panel.MouseDoubleClick += Klikdubbel;
+            panel.MouseClick += KlikScherm;
+            //panel. += Klikdubbel;
             
 
 
@@ -129,10 +130,11 @@ namespace Mandelbrot
 
             try
             {
-                zoomfactor = double.Parse(txtSchaal.Text);
-                xMidden = double.Parse(txtMiddenX.Text);
-                yMidden = double.Parse(txtMiddenY.Text);
-                maxIteratie = int.Parse(txtMax.Text);
+                zoomfactor = Convert.ToDouble(txtSchaal.Text);
+                //zoomfactor = double.Parse(txtSchaal.Text);
+                xMidden = Convert.ToDouble(txtMiddenX.Text);
+                yMidden = Convert.ToDouble(txtMiddenY.Text);
+                maxIteratie = Convert.ToInt32(txtMax.Text);
             }
             catch (Exception ex)
             {
@@ -142,24 +144,17 @@ namespace Mandelbrot
             panel.Invalidate();
         }
 
-        public void KlikScherm(object o, EventArgs e)
+        public void KlikScherm(object o, MouseEventArgs e)
         {
-            //xxxx
-
-        }
-
-        public void Klikdubbel(object o, MouseEventArgs e)
-        {
-            
-            Console.WriteLine("x1: " + xMidden + "y" + yMidden + " mx " + e.Location.X + " my" + e.Location.Y );
+            Console.WriteLine("x1: " + xMidden + "y" + yMidden + " mx " + e.Location.X + " my" + e.Location.Y);
 
 
             double mandelMuisX;
             double mandelMuisY;
 
-            zoomfactor *= 1.5;
+            zoomfactor /= 2;
 
-            ratio = zoomfactor / 100;
+            ratio = zoomfactor /0.01;
 
             mandelMuisX = (e.Location.X + huidigeMidX);
             mandelMuisY = (e.Location.Y + huidigeMidY);
@@ -171,10 +166,21 @@ namespace Mandelbrot
             xMidden = ((panel.Width) - mandelMuisX);
             yMidden = ((panel.Height) - mandelMuisY);
 
+            txtMiddenX.Text = Convert.ToString(xMidden);
+            txtMiddenY.Text = Convert.ToString(yMidden);
+            txtSchaal.Text = Convert.ToString(zoomfactor);
 
             panel.Invalidate();
 
-            
+        }
+
+        public void Klikdubbel(object o, MouseEventArgs e) //misschien - knopje?
+        {
+            zoomfactor /= 2;
+            txtSchaal.Text = Convert.ToString(zoomfactor);
+            panel.Invalidate();
+
+
 
         }
 
@@ -204,8 +210,8 @@ namespace Mandelbrot
                     double aa;
                     double bb;
 
-                    double xzoom = ((x - xMidden) / zoomfactor) ;
-                    double yzoom = ((yMidden - y) / zoomfactor) ; //!!
+                    double xzoom = ((x - xMidden) * zoomfactor) ;
+                    double yzoom = ((yMidden - y) * zoomfactor) ; //!!
                     
                     for (int iteratie = 0;  iteratie <= maxIteratie; iteratie ++)
                     {
