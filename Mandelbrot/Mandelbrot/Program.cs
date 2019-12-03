@@ -9,7 +9,10 @@ namespace Mandelbrot
     class Mandel : Form
     {
 
+        ComboBox menu = new ComboBox();
+
         Button okButton = new Button();
+        
 
         TextBox txtMiddenX = new TextBox();
         TextBox txtMiddenY = new TextBox();
@@ -21,58 +24,77 @@ namespace Mandelbrot
         Label schaalLabel = new Label();
         Label maxLabel = new Label();
 
-        //Panel plaatje = new Panel();
+        Panel panel = new Panel();
 
-        int maxiteratie;
-        double xmidden, ymidden, zoomfactor;
+        int maxIteratie;
+        double xMidden, yMidden, zoomfactor, x, y;
+        double huidigeMidX = 0; double huidigeMidY = 0;
 
+        double ratio;
 
+        Cursor wait = Cursors.WaitCursor;
+        Cursor def = Cursors.Default;
 
         public Mandel()
         {
             this.Text = "Mandelbrot";
             this.Size = new Size(700, 700);
             this.BackColor = Color.AliceBlue;
+            
+            MinimizeBox = false;
+            MaximizeBox = false;
 
             //Opmaak OK knop
-            int txtHoogte = 20;  //wat is deze variabele ook alweer
+            int txtHoogte = 30;
+            int txtboxLengte = 100;
             okButton.Location = new Point(600, 100);
             okButton.Size = new Size(30, txtHoogte);
             okButton.Text = "OK";
 
             //Opmaak Midden X
             midXLabel.Location = new Point(10, 30);
-            midXLabel.Size = new Size(70, 30);
+            midXLabel.Size = new Size(70, txtHoogte);
             midXLabel.Text = "Midden X:";
 
             txtMiddenX.Location = new Point(80, 30);
-            txtMiddenX.Size = new Size(200, 30);
+            txtMiddenX.Size = new Size(txtboxLengte, txtHoogte);
 
-            //Opmaal Midden Y
+            //Opmaak Midden Y
             midYLabel.Location = new Point(10, 70);
-            midYLabel.Size = new Size(70, 30);
+            midYLabel.Size = new Size(70, txtHoogte);
             midYLabel.Text = "Midden Y:";
 
             txtMiddenY.Location = new Point(80, 70);
-            txtMiddenY.Size = new Size(200, 30);
+            txtMiddenY.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak Schaal
-            schaalLabel.Location = new Point(300, 30);
-            schaalLabel.Size = new Size(70, 30);
+            schaalLabel.Location = new Point(220, 30);
+            schaalLabel.Size = new Size(35, txtHoogte);
             schaalLabel.Text = "Schaal:";
 
-            txtSchaal.Location = new Point(370, 30);
-            txtSchaal.Size = new Size(200, 30);
+            txtSchaal.Location = new Point(270, 30);
+            txtSchaal.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak max
-            maxLabel.Location = new Point(300, 70);
-            maxLabel.Size = new Size(70, 30);
+            maxLabel.Location = new Point(220, 70);
+            maxLabel.Size = new Size(30, txtHoogte);
             maxLabel.Text = "Max:";
 
-            txtMax.Location = new Point(370, 70);
-            txtMax.Size = new Size(200, 30);
+            txtMax.Location = new Point(270, 70);
+            txtMax.Size = new Size(txtboxLengte, txtHoogte);
 
+            //opmaak panel
+            panel.Size = new Size(500, 500);
+            panel.Location = new Point(100, 150);
 
+            //opmaak menu
+            menu.Location = new Point(10, 200);
+            menu.Size = new Size(20, 40);
+            //
+            //menu.Items//
+
+            Controls.Add(menu);
+            Controls.Add(panel);
             Controls.Add(midXLabel);
             Controls.Add(txtMiddenX);
             Controls.Add(midYLabel);
@@ -83,55 +105,109 @@ namespace Mandelbrot
             Controls.Add(txtMax);
             Controls.Add(okButton);
 
-            maxiteratie = 50;
-            xmidden = 250.0;
-            ymidden = 250.0;
+            // beginsettings
+            maxIteratie = 50;
+            xMidden = 250.0;
+            yMidden = 250.0;
             zoomfactor = 100.0;
-
-            this.Paint += Tekenmap;
-            okButton.Click += KlikOK;
+            ratio = zoomfactor / 100;
 
             //eventhandlers
+            panel.Paint += Tekenmap;
+            okButton.Click += KlikOK;
+            panel.MouseDoubleClick += Klikdubbel;
+            
 
 
+
+            this.KeyDown += KlikEnter; 
+            
         }
 
         public void KlikOK(object o, EventArgs e)
         {
 
-
             try
             {
                 zoomfactor = double.Parse(txtSchaal.Text);
-                xmidden = double.Parse(txtMiddenX.Text);
-                ymidden = double.Parse(txtMiddenY.Text);
-                maxiteratie = int.Parse(txtMax.Text);
-                
+                xMidden = double.Parse(txtMiddenX.Text);
+                yMidden = double.Parse(txtMiddenY.Text);
+                maxIteratie = int.Parse(txtMax.Text);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
 
-            this.Invalidate();
+            panel.Invalidate();
         }
 
+        public void KlikScherm(object o, EventArgs e)
+        {
+            //xxxx
+
+        }
+
+        public void Klikdubbel(object o, MouseEventArgs e)
+        {
+            
+            Console.WriteLine("x1: " + xMidden + "y" + yMidden + " mx " + e.Location.X + " my" + e.Location.Y );
+
+
+            double mandelMuisX;
+            double mandelMuisY;
+
+            zoomfactor *= 1.5;
+
+            ratio = zoomfactor / 100;
+
+            mandelMuisX = (e.Location.X + huidigeMidX);
+            mandelMuisY = (e.Location.Y + huidigeMidY);
+
+
+            huidigeMidX = mandelMuisX - (panel.Width);
+            huidigeMidY = mandelMuisY - (panel.Height);
+
+            xMidden = ((panel.Width) - mandelMuisX);
+            yMidden = ((panel.Height) - mandelMuisY);
+
+
+            panel.Invalidate();
+
+            
+
+        }
+
+        public void KlikEnter(object o, KeyEventArgs kea)
+        {
+            try
+            {
+                if (kea.KeyCode == Keys.Enter)
+                    KlikOK(o, kea);
+            }
+            catch
+            {
+                Console.WriteLine("hey");
+            }
+        }
+            
 
         public void Tekenmap(Object obj, PaintEventArgs pea)
         {
-            for (double x = 0; x < 500; x++)
+            
+            for (x = 0; x < panel.Width; x++)
             {
-                for (double y = 0; y < 500; y++)
+                for (y = 0; y < panel.Height; y++)
                 {
                     double a = 0;
                     double b = 0;
-                    double aa = 0;
-                    double bb = 0;
+                    double aa;
+                    double bb;
 
-                    double xzoom = ((x - xmidden) / zoomfactor);
-                    double yzoom = ((y - ymidden) / zoomfactor);
+                    double xzoom = ((x - xMidden) / zoomfactor) ;
+                    double yzoom = ((yMidden - y) / zoomfactor) ; //!!
                     
-                    for (int iteratie = 0;  iteratie <= maxiteratie; iteratie ++)
+                    for (int iteratie = 0;  iteratie <= maxIteratie; iteratie ++)
                     {
                         
                         aa = a * a - b * b + xzoom;
@@ -140,7 +216,7 @@ namespace Mandelbrot
 
                         double pythagoras = a * a + b * b;
                         double afstand = Math.Sqrt(pythagoras);
-                        //Console.WriteLine("aa " + aa + " bb " + bb + " a " + a + " b " + b + " afstand " + afstand);
+                        
                         a = aa;
                         b = bb;
 
@@ -148,10 +224,10 @@ namespace Mandelbrot
                         if (afstand > 2)
                         {
                             if (iteratie % 2 == 0)
-                                pea.Graphics.FillRectangle(Brushes.DarkRed, (int)x + 100, (int)y + 150, 1, 1);
+                                pea.Graphics.FillRectangle(Brushes.DarkRed, (int)x, (int)y, 1, 1);
                                 
                             if (iteratie%2 != 0)
-                                pea.Graphics.FillRectangle(Brushes.Black, (int)x + 100, (int)y + 150, 1, 1);
+                                pea.Graphics.FillRectangle(Brushes.Black, (int)x, (int)y, 1, 1);
                             break;
                         }
                         
@@ -161,6 +237,8 @@ namespace Mandelbrot
                     }
                 }
             }
+            
+            
         }
     }
 
