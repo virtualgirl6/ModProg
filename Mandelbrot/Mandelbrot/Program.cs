@@ -138,8 +138,8 @@ namespace Mandelbrot
 
             // beginsettings
             maxIteratie = 50;
-            startPointX = 250;
-            startPointY = 250;
+            
+            
 
             absMiddenX = 0;
             absMiddenY = 0;
@@ -178,8 +178,8 @@ namespace Mandelbrot
             try
             {
                 zoomfactor = Convert.ToDouble(txtboxSchaal.Text);
-                startPointX = Convert.ToDouble(txtboxMidX.Text);
-                startPointY = Convert.ToDouble(txtboxMidY.Text);
+                absMiddenX = Convert.ToDouble(txtboxMidX.Text)/zoomfactor;
+                absMiddenY = Convert.ToDouble(txtboxMidY.Text)/zoomfactor;
                 maxIteratie = Convert.ToInt32(txtboxMax.Text);
             }
             catch (Exception ex)
