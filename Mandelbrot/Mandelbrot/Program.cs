@@ -24,10 +24,8 @@ namespace Mandelbrot
     class Mandel : Form
     {
 
-        ComboBox menu = new ComboBox();
-
         Button okButton = new Button();
-        
+        Button zoomButton = new Button();
 
         TextBox txtboxMidX = new TextBox();
         TextBox txtboxMidY = new TextBox();
@@ -38,22 +36,25 @@ namespace Mandelbrot
         Label midYLabel = new Label();
         Label schaalLabel = new Label();
         Label maxLabel = new Label();
+        Label zoomtxt = new Label();
 
         Panel panel = new Panel();
 
+        ComboBox menu = new ComboBox();
+       
+
         int maxIteratie;
         double xMidden, yMidden, zoomfactor, x, y;
-        double huidigeMidX = 0; double huidigeMidY = 0;
+        double absMiddenX, absMiddenY, zoomAan;
+        
+        bool boolZoom = false;
 
-        double ratio;
 
-        Cursor wait = Cursors.WaitCursor;
-        Cursor def = Cursors.Default;
 
         public Mandel()
         {
             this.Text = "Mandelbrot";
-            this.Size = new Size(700, 700);
+            this.Size = new Size(600, 700);
             this.BackColor = Color.AliceBlue;
             
             MinimizeBox = false;
@@ -62,7 +63,7 @@ namespace Mandelbrot
             //Opmaak OK knop
             int txtHoogte = 30;
             int txtboxLengte = 100;
-            okButton.Location = new Point(600, 100);
+            okButton.Location = new Point(360, 40);
             okButton.Size = new Size(30, txtHoogte);
             okButton.Text = "OK";
 
@@ -75,38 +76,51 @@ namespace Mandelbrot
             txtboxMidX.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak Midden Y
-            midYLabel.Location = new Point(10, 70);
+            midYLabel.Location = new Point(10, 60);
             midYLabel.Size = new Size(70, txtHoogte);
             midYLabel.Text = "Midden Y:";
 
-            txtboxMidY.Location = new Point(80, 70);
+            txtboxMidY.Location = new Point(80, 60);
             txtboxMidY.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak Schaal
-            schaalLabel.Location = new Point(220, 30);
+            schaalLabel.Location = new Point(200, 30);
             schaalLabel.Size = new Size(35, txtHoogte);
             schaalLabel.Text = "Schaal:";
 
-            txtboxSchaal.Location = new Point(270, 30);
+            txtboxSchaal.Location = new Point(250, 30);
             txtboxSchaal.Size = new Size(txtboxLengte, txtHoogte);
 
             //Opmaak max
-            maxLabel.Location = new Point(220, 70);
+            maxLabel.Location = new Point(200, 60);
             maxLabel.Size = new Size(30, txtHoogte);
             maxLabel.Text = "Max:";
 
-            txtboxMax.Location = new Point(270, 70);
+            txtboxMax.Location = new Point(250, 60);
             txtboxMax.Size = new Size(txtboxLengte, txtHoogte);
 
-            //opmaak panel
+            //Opmaak panel
             panel.Size = new Size(500, 500);
-            panel.Location = new Point(100, 150);
+            panel.Location = new Point(50, 150);
 
-            //opmaak menu
-            menu.Location = new Point(10, 200);
-            menu.Size = new Size(20, 40);
+            //Opmaak menu
+            menu.Location = new Point(450, 30);
+            menu.Size = new Size(txtboxLengte, 60);
             //
-            //menu.Items//
+            menu.Items.AddRange(new object[] {"Basis",
+                        "Zoom",
+                        "Item 3",
+                        "Item 4"});
+
+            //Opmaak zoomButton 
+            zoomtxt.Location = new Point(35, 125);
+            zoomtxt.Size = new Size(50, txtHoogte);
+            zoomtxt.Text = "AutoZoom:";
+            zoomButton.Location = new Point(50, 95);
+            zoomButton.Size = new Size(20, 20);
+            zoomButton.Text = " ";
+
+            
 
             Controls.Add(menu);
             Controls.Add(panel);
@@ -119,25 +133,43 @@ namespace Mandelbrot
             Controls.Add(maxLabel);
             Controls.Add(txtboxMax);
             Controls.Add(okButton);
+            Controls.Add(zoomButton);
+            Controls.Add(zoomtxt);            
 
             // beginsettings
             maxIteratie = 50;
-            xMidden = 250.0;
-            yMidden = 250.0;
+            startPointX = 250;
+            startPointY = 250;
+
+            absMiddenX = 0;
+            absMiddenY = 0;
+
             zoomfactor = 0.01;
-            ratio = zoomfactor / 0.01;
+            zoomAan = 1;
 
             //eventhandlers
             panel.Paint += Tekenmap;
-            okButton.Click += KlikOK;
             panel.MouseClick += KlikScherm;
-            //panel. += Klikdubbel;
-            
+            okButton.Click += KlikOK;
+            zoomButton.Click += klikZoom;
+            menu.SelectedIndexChanged += SelectItem;
 
+        }
 
-
-            this.KeyDown += KlikEnter; 
-            
+        public void klikZoom(object o, EventArgs e)
+        {
+            if (!boolZoom)
+            {
+                boolZoom = !boolZoom;
+                zoomButton.Text = "X";
+                zoomAan = 2;
+            }
+            else
+            {
+                boolZoom = !boolZoom;
+                zoomButton.Text = " ";
+                zoomAan = 1;
+            }
         }
 
         public void KlikOK(object o, EventArgs e)
@@ -146,9 +178,8 @@ namespace Mandelbrot
             try
             {
                 zoomfactor = Convert.ToDouble(txtboxSchaal.Text);
-                //zoomfactor = double.Parse(txtSchaal.Text);
-                xMidden = Convert.ToDouble(txtboxMidX.Text);
-                yMidden = Convert.ToDouble(txtboxMidY.Text);
+                startPointX = Convert.ToDouble(txtboxMidX.Text);
+                startPointY = Convert.ToDouble(txtboxMidY.Text);
                 maxIteratie = Convert.ToInt32(txtboxMax.Text);
             }
             catch (Exception ex)
@@ -159,56 +190,34 @@ namespace Mandelbrot
             panel.Invalidate();
         }
 
+
+
         public void KlikScherm(object o, MouseEventArgs e)
         {
-            Console.WriteLine("x1: " + xMidden + "y" + yMidden + " mx " + e.Location.X + " my" + e.Location.Y);
+            
+            absMiddenX = (absMiddenX - (250 - e.Location.X)) * zoomAan;
+            absMiddenY = ( (250 - e.Location.Y) - absMiddenY) * zoomAan;
 
-
-            double mandelMuisX;
-            double mandelMuisY;
-
-            zoomfactor /= 2;
-
-            ratio = zoomfactor /0.01;
-
-            mandelMuisX = (e.Location.X + huidigeMidX);
-            mandelMuisY = (e.Location.Y + huidigeMidY);
-
-
-            huidigeMidX = mandelMuisX - (panel.Width);
-            huidigeMidY = mandelMuisY - (panel.Height);
-
-            xMidden = ((panel.Width) - mandelMuisX);
-            yMidden = ((panel.Height) - mandelMuisY);
-
-            txtboxMidX.Text = Convert.ToString(xMidden);
-            txtboxMidY.Text = Convert.ToString(yMidden);
-            txtboxSchaal.Text = Convert.ToString(zoomfactor);
+            zoomfactor /= zoomAan;
 
             panel.Invalidate();
 
+            txtboxMidX.Text = Convert.ToString(absMiddenX*zoomfactor);
+            txtboxMidY.Text = Convert.ToString(absMiddenY*zoomfactor);
+            txtboxSchaal.Text = Convert.ToString(zoomfactor);
         }
+
+
+
 
         public void Klikdubbel(object o, MouseEventArgs e) //misschien - knopje?
         {
-            zoomfactor /= 2;
+            zoomfactor *= 2;
             txtboxSchaal.Text = Convert.ToString(zoomfactor);
             panel.Invalidate();
-
         }
 
-        public void KlikEnter(object o, KeyEventArgs kea)
-        {
-            try
-            {
-                if (kea.KeyCode == Keys.Enter)
-                    KlikOK(o, kea);
-            }
-            catch
-            {
-                Console.WriteLine("hey");
-            }
-        }
+        
             
 
         public void Tekenmap(Object obj, PaintEventArgs pea)
@@ -223,11 +232,10 @@ namespace Mandelbrot
                     double aa;
                     double bb;
 
-                    double xzoom = ((x - xMidden) * zoomfactor) ;
-                    double yzoom = ((yMidden - y) * zoomfactor) ; //!!
-                    
                     for (int iteratie = 0;  iteratie <= maxIteratie; iteratie ++)
                     {
+                        double xzoom = ((absMiddenX + x) - panel.Width/2) * zoomfactor;
+                        double yzoom = ((y - absMiddenY) - panel.Height/2) * zoomfactor;
                         
                         aa = a * a - b * b + xzoom;
                         bb = 2 * a * b + yzoom;
@@ -249,16 +257,73 @@ namespace Mandelbrot
                                 pea.Graphics.FillRectangle(Brushes.Black, (int)x, (int)y, 1, 1);
                             break;
                         }
-                        
 
-                        
-
+                        //(mandelgetal / (int)max_iteration) * 255)
                     }
                 }
-            }
-            
-            
+            } 
         }
+
+        private void SelectItem(object sender, EventArgs e)
+        {
+
+            int gekozenItem = menu.SelectedIndex;
+
+
+
+            if (gekozenItem == 0)
+            {
+                absMiddenX = 0;
+                absMiddenY = 0;
+                zoomfactor = 0.01;
+                maxIteratie = 100;
+
+                panel.Invalidate();
+
+            }
+
+            if (gekozenItem == 1)
+            {
+                absMiddenX = 100;
+                absMiddenY = 100;
+                zoomfactor = 0.001;
+                maxIteratie = 100;
+
+                panel.Invalidate();
+
+            }
+
+            if (gekozenItem == 2)
+            {
+
+                panel.Invalidate();
+            }
+
+            if (gekozenItem == 3)
+            {
+                panel.Invalidate();
+            }
+
+
+
+
+        }
+
+        void Kleur(int i, byte r, byte g, byte b)
+        {
+            //maxkleur = 255;
+
+            byte Rood = r;
+            byte Groen = g;
+            byte Blauw = b;
+
+            Color.FromArgb(r, g, b);
+
+
+
+
+        }
+
     }
 
 
