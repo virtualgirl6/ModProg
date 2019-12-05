@@ -43,7 +43,7 @@ namespace Mandelbrot
         ComboBox menu = new ComboBox();
        
 
-        int maxIteratie;
+        int iteratie, maxIteratie;
         double xMidden, yMidden, zoomfactor, x, y;
         double absMiddenX, absMiddenY, zoomAan;
         
@@ -156,21 +156,7 @@ namespace Mandelbrot
 
         }
 
-        public void klikZoom(object o, EventArgs e)
-        {
-            if (!boolZoom)
-            {
-                boolZoom = !boolZoom;
-                zoomButton.Text = "X";
-                zoomAan = 2;
-            }
-            else
-            {
-                boolZoom = !boolZoom;
-                zoomButton.Text = " ";
-                zoomAan = 1;
-            }
-        }
+        
 
         public void KlikOK(object o, EventArgs e)
         {
@@ -196,7 +182,7 @@ namespace Mandelbrot
         {
             
             absMiddenX = (absMiddenX - (250 - e.Location.X)) * zoomAan;
-            absMiddenY = ( (250 - e.Location.Y) - absMiddenY) * zoomAan;
+            absMiddenY = (  absMiddenY - ( e.Location.Y - 250)) * zoomAan;
 
             zoomfactor /= zoomAan;
 
@@ -208,17 +194,22 @@ namespace Mandelbrot
         }
 
 
-
-
-        public void Klikdubbel(object o, MouseEventArgs e) //misschien - knopje?
+        public void klikZoom(object o, EventArgs e)
         {
-            zoomfactor *= 2;
-            txtboxSchaal.Text = Convert.ToString(zoomfactor);
-            panel.Invalidate();
+            if (!boolZoom)
+            {
+                boolZoom = !boolZoom;
+                zoomButton.Text = "X";
+                zoomAan = 2;
+            }
+            else
+            {
+                boolZoom = !boolZoom;
+                zoomButton.Text = " ";
+                zoomAan = 1;
+            }
         }
 
-        
-            
 
         public void Tekenmap(Object obj, PaintEventArgs pea)
         {
@@ -232,7 +223,7 @@ namespace Mandelbrot
                     double aa;
                     double bb;
 
-                    for (int iteratie = 0;  iteratie <= maxIteratie; iteratie ++)
+                    for (iteratie = 0;  iteratie <= maxIteratie; iteratie ++)
                     {
                         double xzoom = ((absMiddenX + x) - panel.Width/2) * zoomfactor;
                         double yzoom = ((y - absMiddenY) - panel.Height/2) * zoomfactor;
@@ -255,10 +246,14 @@ namespace Mandelbrot
                                 
                             if (iteratie%2 != 0)
                                 pea.Graphics.FillRectangle(Brushes.Black, (int)x, (int)y, 1, 1);
+
+                            //if (iteratie % 2 != 0)
+                            //pea.Graphics.FillRectangle(Kleur(iteratie), (int)x, (int)y, 1, 1);
+
                             break;
                         }
 
-                        //(mandelgetal / (int)max_iteration) * 255)
+                        
                     }
                 }
             } 
@@ -309,19 +304,40 @@ namespace Mandelbrot
 
         }
 
-        void Kleur(int i, byte r, byte g, byte b)
+        Brush Kleur(int i)
         {
             //maxkleur = 255;
 
-            byte Rood = r;
-            byte Groen = g;
-            byte Blauw = b;
+            //byte Rood = r;
+            //byte Groen = g;
+            //byte Blauw = b;
 
-            Color.FromArgb(r, g, b);
+            //Color.FromArgb(r, g, b);
+            //byte r = (byte)((iteratie / (int)maxIteratie) * 255);
+
+            byte r, g, b;
+            r = 255; g = 255; b = 255;
+
+            if (iteratie % 2 != 0)
+            {
+                r = (byte)Math.Abs(((iteratie / maxIteratie) * 255));
+                g = 200;
+                b = 255;
+            }
+            if (iteratie % 2 == 0)
+            {
+                r = 255;
+                g = (byte)Math.Abs(((iteratie / maxIteratie) * 255));
+                b = 150;
+            }
 
 
+            Brush kwast = new SolidBrush(Color.FromArgb(255, r, g, b));
 
+            
+            
 
+            return kwast; 
         }
 
     }
