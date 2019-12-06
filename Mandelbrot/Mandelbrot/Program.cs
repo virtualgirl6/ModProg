@@ -45,6 +45,9 @@ namespace Mandelbrot
 
         byte r, g, b;
         
+        SolidBrush kwast;
+        Color kleurtje;
+        
         int iteratie, maxIteratie;
         double xMidden, yMidden, zoomfactor, x, y;
         double absMiddenX, absMiddenY, zoomAan;
@@ -155,13 +158,15 @@ namespace Mandelbrot
             zoomAan = 1;
 
             r = 255; g = 255; b = 255;
+            kleurtje = Color.FromArgb(r, g, b);
+            
 
             //eventhandlers
             panel.Paint += Tekenmap;
             panel.MouseClick += KlikScherm;
             okButton.Click += KlikOK;
-            zoomButton.Click += klikZoom;
-            dubbelZoom.Click += klikDubbelZoom;
+            zoomButton.Click += KlikZoom;
+            dubbelZoom.Click += KlikDubbelZoom;
             menu.SelectedIndexChanged += SelectItem;
 
         }
@@ -204,34 +209,36 @@ namespace Mandelbrot
         }
 
 
-        public void klikZoom(object o, EventArgs e)
+        public void KlikZoom(object o, EventArgs e)
         {
             if (!boolZoom)
             {
                 boolZoom = !boolZoom;
                 zoomButton.Text = "X";
+                dubbelZoom.Text = "";
                 zoomAan = 2;
             }
             else
             {
                 boolZoom = !boolZoom;
-                zoomButton.Text = " ";
+                zoomButton.Text = "";
                 zoomAan = 1;
             }
         }
 
-        public void klikDubbelZoom(object o, EventArgs e)
+        public void KlikDubbelZoom(object o, EventArgs e)
         {
             if (!boolZoom)
             {
                 boolZoom = !boolZoom;
                 dubbelZoom.Text = "X";
+                zoomButton.Text = "";
                 zoomAan = 4;
             }
             else
             {
                 boolZoom = !boolZoom;
-                dubbelZoom.Text = " ";
+                dubbelZoom.Text = "";
                 zoomAan = 1;
             }
         }
@@ -264,12 +271,12 @@ namespace Mandelbrot
                         a = aa;
                         b = bb;
 
-                        Brush kwast = Kleur(iteratie);
+                        
                         if (afstand > 2)
                         {
                             if (iteratie % 2 == 0)
                                 
-                                pea.Graphics.FillRectangle(kwast, (int)x, (int)y, 1, 1);
+                                pea.Graphics.FillRectangle(Kleur(iteratie), (int)x, (int)y, 1, 1);
                                 
                             if (iteratie%2 != 0)
                                 pea.Graphics.FillRectangle(Brushes.Black, (int)x, (int)y, 1, 1);
@@ -331,22 +338,12 @@ namespace Mandelbrot
 
         }
 
-        Brush Kleur(double i)
+        SolidBrush Kleur(double i)
         {
-            //maxkleur = 255;
-
-            //byte Rood = r;
-            //byte Groen = g;
-            //byte Blauw = b;
-
-            //Color.FromArgb(r, g, b);
-            //byte r = (byte)((iteratie / (int)maxIteratie) * 255);
-
-            
 
             if (iteratie % 2 != 0)
             {
-                r = (byte)((i / maxIteratie) * 255);
+                r = (byte)((i / (double)maxIteratie) * 255);
                 g = 200;
                 b = 5;
                 
@@ -357,14 +354,10 @@ namespace Mandelbrot
                 r = 255;
                 g = ((byte)((i / (double)maxIteratie) * 255));
                 b = 150;
-                //Console.WriteLine(g + " i " + i + " maxit " + maxIteratie) ;  
             }
 
-
-            Brush kwast = new SolidBrush(Color.FromArgb(r, g, b));
-
-            //Console.WriteLine(r + " r" + g + "g " + b + " kwast " + kwast);
-            
+            kleurtje = Color.FromArgb(r, g, b);
+            kwast =  new SolidBrush(kleurtje);
 
             return kwast; 
         }
