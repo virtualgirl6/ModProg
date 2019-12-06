@@ -26,7 +26,7 @@ namespace Mandelbrot
 
         Button okButton = new Button();
         Button zoomButton = new Button();
-
+        Button dubbelZoom = new Button();
         TextBox txtboxMidX = new TextBox();
         TextBox txtboxMidY = new TextBox();
         TextBox txtboxSchaal = new TextBox();
@@ -37,12 +37,14 @@ namespace Mandelbrot
         Label schaalLabel = new Label();
         Label maxLabel = new Label();
         Label zoomtxt = new Label();
+        Label dubbelzoomtxt = new Label();
 
         Panel panel = new Panel();
 
         ComboBox menu = new ComboBox();
-       
 
+        byte r, g, b;
+        
         int iteratie, maxIteratie;
         double xMidden, yMidden, zoomfactor, x, y;
         double absMiddenX, absMiddenY, zoomAan;
@@ -115,12 +117,18 @@ namespace Mandelbrot
             //Opmaak zoomButton 
             zoomtxt.Location = new Point(35, 125);
             zoomtxt.Size = new Size(50, txtHoogte);
-            zoomtxt.Text = "AutoZoom:";
+            zoomtxt.Text = "AutoZoom  2x";
             zoomButton.Location = new Point(50, 95);
             zoomButton.Size = new Size(20, 20);
             zoomButton.Text = " ";
 
-            
+            //Opmaak dubbelZoom button
+            dubbelzoomtxt.Location = new Point (100, 125);
+            dubbelzoomtxt.Size = new Size(50, txtHoogte);
+            dubbelzoomtxt.Text = "AutoZoom  4x";
+            dubbelZoom.Location = new Point(100, 95);
+            dubbelZoom.Size = new Size(20, 20);
+            dubbelZoom.Text = " ";
 
             Controls.Add(menu);
             Controls.Add(panel);
@@ -134,24 +142,26 @@ namespace Mandelbrot
             Controls.Add(txtboxMax);
             Controls.Add(okButton);
             Controls.Add(zoomButton);
-            Controls.Add(zoomtxt);            
+            Controls.Add(zoomtxt);
+            Controls.Add(dubbelZoom);
+            Controls.Add(dubbelzoomtxt);
 
             // beginsettings
             maxIteratie = 50;
-            
-            
-
             absMiddenX = 0;
             absMiddenY = 0;
 
             zoomfactor = 0.01;
             zoomAan = 1;
 
+            r = 255; g = 255; b = 255;
+
             //eventhandlers
             panel.Paint += Tekenmap;
             panel.MouseClick += KlikScherm;
             okButton.Click += KlikOK;
             zoomButton.Click += klikZoom;
+            dubbelZoom.Click += klikDubbelZoom;
             menu.SelectedIndexChanged += SelectItem;
 
         }
@@ -210,6 +220,22 @@ namespace Mandelbrot
             }
         }
 
+        public void klikDubbelZoom(object o, EventArgs e)
+        {
+            if (!boolZoom)
+            {
+                boolZoom = !boolZoom;
+                dubbelZoom.Text = "X";
+                zoomAan = 4;
+            }
+            else
+            {
+                boolZoom = !boolZoom;
+                dubbelZoom.Text = " ";
+                zoomAan = 1;
+            }
+        }
+
 
         public void Tekenmap(Object obj, PaintEventArgs pea)
         {
@@ -238,11 +264,12 @@ namespace Mandelbrot
                         a = aa;
                         b = bb;
 
-
+                        Brush kwast = Kleur(iteratie);
                         if (afstand > 2)
                         {
                             if (iteratie % 2 == 0)
-                                pea.Graphics.FillRectangle(Brushes.DarkRed, (int)x, (int)y, 1, 1);
+                                
+                                pea.Graphics.FillRectangle(kwast, (int)x, (int)y, 1, 1);
                                 
                             if (iteratie%2 != 0)
                                 pea.Graphics.FillRectangle(Brushes.Black, (int)x, (int)y, 1, 1);
@@ -304,7 +331,7 @@ namespace Mandelbrot
 
         }
 
-        Brush Kleur(int i)
+        Brush Kleur(double i)
         {
             //maxkleur = 255;
 
@@ -315,26 +342,28 @@ namespace Mandelbrot
             //Color.FromArgb(r, g, b);
             //byte r = (byte)((iteratie / (int)maxIteratie) * 255);
 
-            byte r, g, b;
-            r = 255; g = 255; b = 255;
+            
 
             if (iteratie % 2 != 0)
             {
-                r = (byte)Math.Abs(((iteratie / maxIteratie) * 255));
+                r = (byte)((i / maxIteratie) * 255);
                 g = 200;
-                b = 255;
+                b = 5;
+                
+                
             }
             if (iteratie % 2 == 0)
             {
                 r = 255;
-                g = (byte)Math.Abs(((iteratie / maxIteratie) * 255));
+                g = ((byte)((i / (double)maxIteratie) * 255));
                 b = 150;
+                //Console.WriteLine(g + " i " + i + " maxit " + maxIteratie) ;  
             }
 
 
-            Brush kwast = new SolidBrush(Color.FromArgb(255, r, g, b));
+            Brush kwast = new SolidBrush(Color.FromArgb(r, g, b));
 
-            
+            //Console.WriteLine(r + " r" + g + "g " + b + " kwast " + kwast);
             
 
             return kwast; 
