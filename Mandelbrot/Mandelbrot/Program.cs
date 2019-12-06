@@ -27,6 +27,7 @@ namespace Mandelbrot
         Button okButton = new Button();
         Button zoomButton = new Button();
         Button dubbelZoom = new Button();
+        Button zoomUit = new Button();
         TextBox txtboxMidX = new TextBox();
         TextBox txtboxMidY = new TextBox();
         TextBox txtboxSchaal = new TextBox();
@@ -38,6 +39,7 @@ namespace Mandelbrot
         Label maxLabel = new Label();
         Label zoomtxt = new Label();
         Label dubbelzoomtxt = new Label();
+        Label zoomuittxt = new Label();
 
         Panel panel = new Panel();
 
@@ -48,8 +50,8 @@ namespace Mandelbrot
         SolidBrush kwast;
         Color kleurtje;
         
-        int iteratie, maxIteratie;
-        double xMidden, yMidden, zoomfactor, x, y;
+        int iteratie;
+        double maxIteratie, xMidden, yMidden, zoomfactor, x, y;
         double absMiddenX, absMiddenY, zoomAan;
         
         bool boolZoom = false;
@@ -133,6 +135,15 @@ namespace Mandelbrot
             dubbelZoom.Size = new Size(20, 20);
             dubbelZoom.Text = " ";
 
+            //Opmaak zoomUit button
+            zoomuittxt.Location = new Point(150, 125);
+            zoomuittxt.Size = new Size(50, txtHoogte);
+            zoomuittxt.Text = "Auto UitZoom";
+            zoomUit.Location = new Point(150, 95);
+            zoomUit.Size = new Size(20, 20);
+            zoomUit.Text = "";
+
+
             Controls.Add(menu);
             Controls.Add(panel);
             Controls.Add(midXLabel);
@@ -148,6 +159,8 @@ namespace Mandelbrot
             Controls.Add(zoomtxt);
             Controls.Add(dubbelZoom);
             Controls.Add(dubbelzoomtxt);
+            Controls.Add(zoomUit);
+            Controls.Add(zoomuittxt);
 
             // beginsettings
             maxIteratie = 50;
@@ -167,6 +180,7 @@ namespace Mandelbrot
             okButton.Click += KlikOK;
             zoomButton.Click += KlikZoom;
             dubbelZoom.Click += KlikDubbelZoom;
+            zoomUit.Click += KlikZoomUit;
             menu.SelectedIndexChanged += SelectItem;
 
         }
@@ -222,6 +236,7 @@ namespace Mandelbrot
             {
                 boolZoom = !boolZoom;
                 zoomButton.Text = "";
+                zoomUit.Text = "";
                 zoomAan = 1;
             }
         }
@@ -233,12 +248,34 @@ namespace Mandelbrot
                 boolZoom = !boolZoom;
                 dubbelZoom.Text = "X";
                 zoomButton.Text = "";
+                zoomUit.Text = "";
                 zoomAan = 4;
             }
             else
             {
                 boolZoom = !boolZoom;
                 dubbelZoom.Text = "";
+                zoomUit.Text = "";
+                zoomAan = 1;
+            }
+        }
+
+        public void KlikZoomUit(object o, EventArgs e)
+        {
+            if (!boolZoom)
+            {
+                boolZoom = !boolZoom;
+                zoomUit.Text = "X";
+                dubbelZoom.Text = "";
+                zoomButton.Text = "";
+                zoomAan = 0.5;
+            }
+            else
+            {
+                boolZoom = !boolZoom;
+                zoomUit.Text = "";
+                dubbelZoom.Text = "";
+                zoomButton.Text = "";
                 zoomAan = 1;
             }
         }
@@ -271,22 +308,24 @@ namespace Mandelbrot
                         a = aa;
                         b = bb;
 
-                        
+
                         if (afstand > 2)
                         {
-                            if (iteratie % 2 == 0)
-                                
+                            pea.Graphics.FillRectangle(Kleur(iteratie), (int)x, (int)y, 1, 1);
+                            /*if (iteratie % 2 == 0)
+
                                 pea.Graphics.FillRectangle(Kleur(iteratie), (int)x, (int)y, 1, 1);
-                                
+
                             if (iteratie%2 != 0)
                                 pea.Graphics.FillRectangle(Brushes.Black, (int)x, (int)y, 1, 1);
-
+*/
                             //if (iteratie % 2 != 0)
                             //pea.Graphics.FillRectangle(Kleur(iteratie), (int)x, (int)y, 1, 1);
 
                             break;
-                        }
+                            
 
+                        }
                         
                     }
                 }
@@ -340,20 +379,33 @@ namespace Mandelbrot
 
         SolidBrush Kleur(double i)
         {
+            
+            if (iteratie < maxIteratie/3)
+            {
+                r = (byte)((i / maxIteratie) * 255);
+                g = (byte)((i / maxIteratie) * 255);
+                b = 50; 
+                
 
-            if (iteratie % 2 != 0)
-            {
-                r = (byte)((i / (double)maxIteratie) * 255);
-                g = 200;
-                b = 5;
-                
-                
             }
-            if (iteratie % 2 == 0)
+            if (maxIteratie/3 < iteratie && iteratie < maxIteratie/(2/3))
             {
-                r = 255;
-                g = ((byte)((i / (double)maxIteratie) * 255));
-                b = 150;
+                r = 100;
+                g = (byte)((i / maxIteratie) * 255);
+                b = (byte)((i / maxIteratie) * 255);
+            }
+
+            if (maxIteratie / (2 / 3) < iteratie && iteratie < maxIteratie)
+            {
+                r = (byte)((i / maxIteratie) * 255) ;
+                g = 100;
+                b = ((byte)((i / maxIteratie) * 255));
+
+            }
+
+            if (iteratie == (int)maxIteratie -1 )
+            {
+                kleurtje = Color.Black;
             }
 
             kleurtje = Color.FromArgb(r, g, b);
