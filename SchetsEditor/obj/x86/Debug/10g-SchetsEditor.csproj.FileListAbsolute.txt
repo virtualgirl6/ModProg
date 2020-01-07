@@ -1,0 +1,7 @@
+/Users/victoriabosch/GitHub/ModProg/SchetsEditor/bin/Debug/Schets.exe
+/Users/victoriabosch/GitHub/ModProg/SchetsEditor/bin/Debug/Schets.pdb
+/Users/victoriabosch/GitHub/ModProg/SchetsEditor/obj/x86/Debug/10g-SchetsEditor.csprojAssemblyReference.cache
+/Users/victoriabosch/GitHub/ModProg/SchetsEditor/obj/x86/Debug/SchetsEditor.Properties.Resources.resources
+/Users/victoriabosch/GitHub/ModProg/SchetsEditor/obj/x86/Debug/10g-SchetsEditor.csproj.GenerateResource.cache
+/Users/victoriabosch/GitHub/ModProg/SchetsEditor/obj/x86/Debug/Schets.exe
+/Users/victoriabosch/GitHub/ModProg/SchetsEditor/obj/x86/Debug/Schets.pdb

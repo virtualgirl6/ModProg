@@ -1,0 +1,33 @@
+﻿<Properties StartupConfiguration="{8F81CD5E-F6A9-41CE-8E37-20C7280949E4}|Default">
+  <MonoDevelop.Ide.ItemProperties.10g-SchetsEditor PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Tools.cs">
+    <Files>
+      <File FileName="Hoofdscherm.cs" Line="1" Column="1" />
+      <File FileName="Program.cs" Line="1" Column="1" />
+      <File FileName="Schets.cs" Line="1" Column="1" />
+      <File FileName="SchetsControl.cs" Line="1" Column="1" />
+      <File FileName="SchetsWin.cs" Line="1" Column="1" />
+      <File FileName="Tools.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="10g-SchetsEditor" expanded="True">
+            <Node name="10g-SchetsEditor" expanded="True">
+              <Node name="Tools.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
