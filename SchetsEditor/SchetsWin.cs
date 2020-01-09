@@ -49,6 +49,8 @@ namespace SchetsEditor
                                     , new VolRechthoekTool()
                                     , new TekstTool()
                                     , new GumTool()
+                                    , new CirkelTool()
+                                    ,new VulCirkelTool()
                                     };
             String[] deKleuren = { "Black", "Red", "Green", "Blue"
                                  , "Yellow", "Magenta", "Cyan" 
@@ -76,7 +78,7 @@ namespace SchetsEditor
                                        {   huidigeTool.Letter  (schetscontrol, kpea.KeyChar); 
                                        };
             this.Controls.Add(schetscontrol);
-
+            
             menuStrip = new MenuStrip();
             menuStrip.Visible = false;
             this.Controls.Add(menuStrip);
@@ -87,6 +89,7 @@ namespace SchetsEditor
             this.maakAktieButtons(deKleuren);
             this.Resize += this.veranderAfmeting;
             this.veranderAfmeting(null, null);
+
         }
 
         private void maakFileMenu()

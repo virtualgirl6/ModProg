@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -8,24 +9,38 @@ namespace SchetsEditor
     {   private Schets schets;
         private Color penkleur;
 
+        public List<string> lijst = new List<string>();
+
         public Color PenKleur
         { get { return penkleur; }
         }
         public Schets Schets
         { get { return schets;   }
         }
+
+        //eigen
+        public void VoegToe(string a)
+        {
+            lijst.Add(a);
+            
+            foreach (string st in lijst)
+                Console.WriteLine(st);
+        }
+
         public SchetsControl()
         {   this.BorderStyle = BorderStyle.Fixed3D;
             this.schets = new Schets();
             this.Paint += this.teken;
             this.Resize += this.veranderAfmeting;
             this.veranderAfmeting(null, null);
+            
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
         }
         private void teken(object o, PaintEventArgs pea)
         {   schets.Teken(pea.Graphics);
+            
         }
         private void veranderAfmeting(object o, EventArgs ea)
         {   schets.VeranderAfmeting(this.ClientSize);

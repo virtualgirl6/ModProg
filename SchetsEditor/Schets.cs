@@ -7,11 +7,23 @@ namespace SchetsEditor
     public class Schets
     {
         private Bitmap bitmap;
-        
+
         public Schets()
         {
             bitmap = new Bitmap(1, 1);
+            //Console.WriteLine("bit");
+
         }
+
+        public void SchetsVanList() //weet niet of dit zo moet. tekenen wat op de lijst staat
+        {
+            //SchetsControl sc = new SchetsControl();
+            //for (int i = 0; i < sc.lijst1.Count; i++)
+            {
+                //teken
+            }
+        }
+
         public Graphics BitmapGraphics
         {
             get { return Graphics.FromImage(bitmap); }
@@ -20,7 +32,7 @@ namespace SchetsEditor
         {
             if (sz.Width > bitmap.Size.Width || sz.Height > bitmap.Size.Height)
             {
-                Bitmap nieuw = new Bitmap( Math.Max(sz.Width,  bitmap.Size.Width)
+                Bitmap nieuw = new Bitmap(Math.Max(sz.Width, bitmap.Size.Width)
                                          , Math.Max(sz.Height, bitmap.Size.Height)
                                          );
                 Graphics gr = Graphics.FromImage(nieuw);
