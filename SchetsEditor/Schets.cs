@@ -31,14 +31,14 @@ namespace SchetsEditor
         }
         public void Teken(Graphics gr)
         {
-            //gr.DrawImage(bitmap, 0, 0);
+            gr.DrawImage(bitmap, 0, 0);
             gr.DrawEllipse(Pens.Black, 1, 2, 6, 6);
         }
 
         public void TekenRecht(Graphics gr, Pen p, Rectangle r)
-        {   gr.DrawRectangle(p, r);
+        {
             gr.DrawImage(bitmap, 0, 0);
-            Console.WriteLine("rect");
+            gr.DrawRectangle(p, r);
         }
 
         public void TekenRechtVol(Graphics gr, Brush b, Rectangle r)
@@ -52,13 +52,16 @@ namespace SchetsEditor
             gr.DrawImage(bitmap, 0, 0);
             gr.DrawLine(p, p1, p2);
         }
-        public void TekenPen()
-        { }
+        public void TekenPen(Graphics gr, Pen p, Point p1, Point p2)
+        {
+            gr.DrawLine(p, p1, p2); //denk ik
+        }
    
         public void TekenCirkel(Graphics gr, Pen p, Rectangle r)
         {
             gr.DrawImage(bitmap, 0, 0);
             gr.DrawEllipse(p, r);
+            
         }
         public void TekenCirkelVol(Graphics gr, Brush b, Rectangle r)
         {
@@ -66,8 +69,13 @@ namespace SchetsEditor
             gr.FillEllipse(b, r);
         }
 
+        public void Weg()
 
-
+        {
+            Graphics g = Graphics.FromImage(bitmap); 
+            Color c = Color.White;
+            g.Clear(c);
+        }
         public void Schoon()
         {
             Graphics gr = Graphics.FromImage(bitmap);

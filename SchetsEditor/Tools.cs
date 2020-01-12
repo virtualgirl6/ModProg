@@ -90,6 +90,15 @@ namespace SchetsEditor
             kwast = b;
         }
 
+        public void Eigenschap(String n, Pen p, Point p1, Point p2)
+        {
+            naam = n;
+            start = p1;
+            eind = p2;
+            pen = p;
+        }
+
+
         /*public void Eigenschap(String naam, Point start, Brush b, DoubleSize grootte)
         {
             Grootte = grootte;
@@ -181,22 +190,30 @@ namespace SchetsEditor
             base.MuisLos(s, p);
             this.Compleet(s.MaakBitmapGraphics(), this.startpunt, p);
 
-
+            
             //eigen!!
             if (this.GetType().Name != "GumTool")
             {
-                o.Eigenschap(this.GetType().Name, MaakPen(kwast, 2), Punten2Rechthoek(this.startpunt, p));
-                o.Toevoeg(s);
+                if (this.GetType().Name == "VolRechthoekTool" || this.GetType().Name == "VolCirkelTool")
+                {
+                    o.Eigenschap(this.GetType().Name, kwast, Punten2Rechthoek(this.startpunt, p));
+                    o.Toevoeg(s);
+                }
 
                 if (this.GetType().Name == "PenTool" || this.GetType().Name == "LijnTool")
                 {
                     o.Eigenschap(this.GetType().Name, MaakPen(kwast, 2), this.startpunt, p);
                     o.Toevoeg(s);
                 }
-
+                else
+                {
+                    o.Eigenschap(this.GetType().Name, MaakPen(kwast, 2), Punten2Rechthoek(this.startpunt, p));
+                    o.Toevoeg(s);
+                }
             }
             s.Invalidate();
         }
+
         public override void Letter(SchetsControl s, char c)
         {
         }
@@ -273,12 +290,12 @@ namespace SchetsEditor
             base.MuisLos(s, p);
             
             Gum(p.X, p.Y, s);
-            Console.WriteLine("gum2");
+            //Console.WriteLine("gum2");
         }
         public override void Bezig(Graphics g, Point p1, Point p2) //parameters? 
         {
             //SchetsControl s = new SchetsControl();
-            Console.WriteLine("bezig");
+            //Console.WriteLine("bezig");
             
             //Gum(p2.X, p2.Y, o.);
             
@@ -294,15 +311,15 @@ namespace SchetsEditor
                 if (px > s.lijst[i].rect.X && px < (s.lijst[i].rect.Width + s.lijst[i].rect.X) &&
                     py > s.lijst[i].rect.Y && py < (s.lijst[i].rect.Height + s.lijst[i].rect.Y))
                 {
-                    Console.WriteLine(s.lijst.Count);
+                    //Console.WriteLine(s.lijst.Count);
                     o.Haalweg(s, i);
-                    Console.WriteLine(s.lijst.Count);
+                    //Console.WriteLine(s.lijst.Count);
                     Console.WriteLine("haalweggum");
                 }
                 else
                 {
                     Console.WriteLine("geen gum");
-                    Console.WriteLine(s.lijst[i].rect);
+                    //Console.WriteLine(s.lijst[i].rect);
                 }
             }
             
@@ -337,7 +354,7 @@ namespace SchetsEditor
 
     }
 
-    public class VulCirkelTool : RechthoekTool
+    public class VolCirkelTool : RechthoekTool
     {
         public override string ToString() { return "vulCirkel"; }
 

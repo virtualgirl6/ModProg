@@ -17,13 +17,13 @@ namespace SchetsEditor
 
             for (int i = 0; i < lijst.Count; i++)
             {
-                naam = lijst[i].Naam;
+                naam = lijst[i].naam;
 
                 if (naam == "CirkelTool")
                     schets.TekenCirkel(pea.Graphics, lijst[i].pen, lijst[i].rect);
 
 
-                if (naam == "VulCirkelTool")
+                if (naam == "VolCirkelTool")
                    schets.TekenCirkelVol(pea.Graphics, lijst[i].kwast, lijst[i].rect);
                 //Graphics.FillEllipse();
 
@@ -59,8 +59,8 @@ namespace SchetsEditor
 
             //foreach (var st in lijst)
               //  Console.WriteLine("var" + st);
-            if (lijst.Count > 1)
-                Console.WriteLine("hi" + lijst[1].rect);
+            //if (lijst.Count > 1)
+              //  Console.WriteLine("hi" + lijst[1].rect);
             
         }
 
@@ -69,6 +69,9 @@ namespace SchetsEditor
             Console.WriteLine("count" + lijst.Count);
             lijst.Remove(a);
             Console.WriteLine("c" +lijst.Count);
+            this.Invalidate();
+            schets.Weg();
+            
         }
 
         public SchetsControl()
@@ -79,6 +82,7 @@ namespace SchetsEditor
             //this.Paint += this.teken;
             this.Resize += this.veranderAfmeting;
             this.veranderAfmeting(null, null);
+            
 
         }
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -89,6 +93,7 @@ namespace SchetsEditor
             schets.Teken(pea.Graphics);
         }
 
+        
         private void veranderAfmeting(object o, EventArgs ea)
         {
             schets.VeranderAfmeting(this.ClientSize);
@@ -98,6 +103,7 @@ namespace SchetsEditor
         {
             Graphics g = schets.BitmapGraphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
+            
             return g;
         }
         public void Schoon(object o, EventArgs ea)
@@ -105,6 +111,7 @@ namespace SchetsEditor
             schets.Schoon();
             this.Invalidate();
         }
+
         public void Roteer(object o, EventArgs ea)
         {
             schets.VeranderAfmeting(new Size(this.ClientSize.Height, this.ClientSize.Width));

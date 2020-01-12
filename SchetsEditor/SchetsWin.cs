@@ -50,7 +50,7 @@ namespace SchetsEditor
                                     , new TekstTool()
                                     , new GumTool()
                                     , new CirkelTool()
-                                    , new VulCirkelTool()
+                                    , new VolCirkelTool()
 
 
                                     };
