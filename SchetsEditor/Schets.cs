@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace SchetsEditor
@@ -29,7 +28,7 @@ namespace SchetsEditor
                 bitmap = nieuw;
             }
         }
-        public void Teken(Graphics gr)
+        public void Teken(Graphics gr) //weg?
         {
             gr.DrawImage(bitmap, 0, 0);
             gr.DrawEllipse(Pens.Black, 1, 2, 6, 6);
@@ -47,9 +46,9 @@ namespace SchetsEditor
             gr.FillRectangle(b, r);
         }
 
-        public void TekenLijn(Graphics gr, Pen p, Point p1, Point p2)
+        public void TekenLijn(Graphics gr, Pen p, Point p1, Point p2) //te hoekig!
         {
-            gr.DrawImage(bitmap, 0, 0);
+            //gr.DrawImage(bitmap, 0, 0); 
             gr.DrawLine(p, p1, p2);
         }
         public void TekenPen(Graphics gr, Pen p, Point p1, Point p2)
@@ -61,8 +60,8 @@ namespace SchetsEditor
         {
             gr.DrawImage(bitmap, 0, 0);
             gr.DrawEllipse(p, r);
-            
         }
+
         public void TekenCirkelVol(Graphics gr, Brush b, Rectangle r)
         {
             gr.DrawImage(bitmap, 0, 0);
@@ -70,17 +69,22 @@ namespace SchetsEditor
         }
 
         public void Weg()
-
         {
             Graphics g = Graphics.FromImage(bitmap); 
             Color c = Color.White;
             g.Clear(c);
+            
         }
+
         public void Schoon()
         {
             Graphics gr = Graphics.FromImage(bitmap);
-            gr.FillRectangle(Brushes.White, 0, 0, bitmap.Width, bitmap.Height);
+            Color c = Color.White;
+            gr.Clear(c);
+            //Graphics gr = Graphics.FromImage(bitmap);
+            //gr.FillRectangle(Brushes.White, 0, 0, bitmap.Width, bitmap.Height);
         }
+
         public void Roteer()
         {
             bitmap.RotateFlip(RotateFlipType.Rotate90FlipNone);

@@ -10,6 +10,26 @@ namespace SchetsEditor
     {
         private Schets schets;
         private Color penkleur;
+        public List<ObjectVorm> lijst = new List<ObjectVorm>(); //misschien de new in tekenLijst zetten
+
+        public Color PenKleur
+        {
+            get { return penkleur; }
+        }
+        public Schets Schets
+        {
+            get { return schets; }
+        }
+
+        public SchetsControl()
+        {
+            this.BorderStyle = BorderStyle.Fixed3D;
+            this.schets = new Schets();
+            this.Paint += this.tekenLijst;
+            //this.Paint += this.teken;
+            this.Resize += this.veranderAfmeting;
+            this.veranderAfmeting(null, null);
+        }
 
         public void tekenLijst(object o, PaintEventArgs pea) //weet niet of dit zo moet. tekenen wat op de lijst staat
         {
@@ -22,46 +42,26 @@ namespace SchetsEditor
                 if (naam == "CirkelTool")
                     schets.TekenCirkel(pea.Graphics, lijst[i].pen, lijst[i].rect);
 
-
                 if (naam == "VolCirkelTool")
                    schets.TekenCirkelVol(pea.Graphics, lijst[i].kwast, lijst[i].rect);
-                //Graphics.FillEllipse();
 
                 if (naam == "RechthoekTool")
                     schets.TekenRecht(pea.Graphics, lijst[i].pen, lijst[i].rect); //Graphics.DrawEllipse();
                     
                 if (naam == "VolRechthoekTool")
-                {
                     schets.TekenRechtVol(pea.Graphics, lijst[i].kwast, lijst[i].rect);
-                }//Graphics.FillRectangle();
 
                 if (naam == "LijnTool")
                     schets.TekenLijn(pea.Graphics, lijst[i].pen, lijst[i].start, lijst[i].eind);
+
+                if (naam == "PenTool")
+                    schets.TekenLijn(pea.Graphics, lijst[i].pen, lijst[i].start, lijst[i].eind);
             }
         }
-        
 
-        public List<ObjectVorm> lijst = new List<ObjectVorm>();
-
-        public Color PenKleur
-        {
-            get { return penkleur; }
-        }
-        public Schets Schets
-        {
-            get { return schets; }
-        }
-
-        //eigen
         public void VoegToe(ObjectVorm a)
         {
             lijst.Add(a);
-
-            //foreach (var st in lijst)
-              //  Console.WriteLine("var" + st);
-            //if (lijst.Count > 1)
-              //  Console.WriteLine("hi" + lijst[1].rect);
-            
         }
 
         public void Weghaal(ObjectVorm a)
@@ -69,22 +69,13 @@ namespace SchetsEditor
             Console.WriteLine("count" + lijst.Count);
             lijst.Remove(a);
             Console.WriteLine("c" +lijst.Count);
-            this.Invalidate();
+            
             schets.Weg();
-            
+            this.Invalidate();
         }
 
-        public SchetsControl()
-        {
-            this.BorderStyle = BorderStyle.Fixed3D;
-            this.schets = new Schets();
-            this.Paint += this.tekenLijst;
-            //this.Paint += this.teken;
-            this.Resize += this.veranderAfmeting;
-            this.veranderAfmeting(null, null);
-            
+        
 
-        }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
         }
@@ -108,8 +99,12 @@ namespace SchetsEditor
         }
         public void Schoon(object o, EventArgs ea)
         {
+
+            lijst.Clear();
             schets.Schoon();
+
             this.Invalidate();
+            
         }
 
         public void Roteer(object o, EventArgs ea)

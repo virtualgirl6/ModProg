@@ -51,12 +51,14 @@ namespace SchetsEditor
                                     , new GumTool()
                                     , new CirkelTool()
                                     , new VolCirkelTool()
-
-
                                     };
-            String[] deKleuren = { "Black", "Red", "Green", "Blue"
-                                 , "Yellow", "Magenta", "Cyan"
-                                 };
+            
+            List<string> deKleuren = new List<string>();
+            foreach (PropertyInfo p in typeof(Color).GetProperties())
+            {
+                if (p.PropertyType.FullName == "System.Drawing.Color")
+                    deKleuren.Add(p.Name);
+            }
 
             this.ClientSize = new Size(700, 500);
             huidigeTool = deTools[0];
@@ -90,9 +92,9 @@ namespace SchetsEditor
             this.Controls.Add(menuStrip);
             this.maakFileMenu();
             this.maakToolMenu(deTools);
-            this.maakAktieMenu(deKleuren);
+            this.maakAktieMenu(deKleuren); //!
             this.maakToolButtons(deTools);
-            this.maakAktieButtons(deKleuren);
+            this.maakAktieButtons(deKleuren); //!
             this.Resize += this.veranderAfmeting;
             this.veranderAfmeting(null, null);
         }
@@ -120,7 +122,7 @@ namespace SchetsEditor
             menuStrip.Items.Add(menu);
         }
 
-        private void maakAktieMenu(String[] kleuren)
+        private void maakAktieMenu(List<string> kleuren) //!!!
         {
             ToolStripMenuItem menu = new ToolStripMenuItem("Aktie");
             menu.DropDownItems.Add("Clear", null, schetscontrol.Schoon);
@@ -153,7 +155,7 @@ namespace SchetsEditor
             }
         }
 
-        private void maakAktieButtons(String[] kleuren)
+        private void maakAktieButtons(List<string> kleuren)//(String[] kleuren)
         {
             paneel = new Panel();
             paneel.Size = new Size(600, 24);
@@ -181,9 +183,11 @@ namespace SchetsEditor
             cbb = new ComboBox(); cbb.Location = new Point(240, 0);
             cbb.DropDownStyle = ComboBoxStyle.DropDownList;
             cbb.SelectedValueChanged += schetscontrol.VeranderKleur;
+
             foreach (string k in kleuren)
                 cbb.Items.Add(k);
-            cbb.SelectedIndex = 0;
+
+            cbb.SelectedIndex = 8;
             paneel.Controls.Add(cbb);
         }
     }

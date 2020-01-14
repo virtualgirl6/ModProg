@@ -30,30 +30,8 @@ namespace SchetsEditor
         }
         public abstract void MuisDrag(SchetsControl s, Point p);
         public abstract void Letter(SchetsControl s, char c);
+
     }
-
-
-    //eigen!  Methode om size in double te maken 
-    /*public class DoubleSize
-    {
-
-        public double Width;
-        public double Height;
-
-        public DoubleSize(double width, double height)
-        {
-            Width = width;
-            Height = height;
-
-        }
-
-        public override string ToString()
-        {
-            return Width.ToString() + "," + Height.ToString();
-
-        }
-    }*/
-
 
     //eigen! wordt in tweepunttool aangeroepen
     public class ObjectVorm
@@ -121,6 +99,7 @@ namespace SchetsEditor
         public void Haalweg(SchetsControl s, int i)
         {
             s.Weghaal(s.lijst[i]);
+            
             Console.WriteLine("weggehaald");
         }
     }
@@ -143,17 +122,18 @@ namespace SchetsEditor
                 gr.MeasureString(tekst, font, this.startpunt, StringFormat.GenericTypographic);
                 gr.DrawString(tekst, font, kwast,
                                               this.startpunt, StringFormat.GenericTypographic);
-                // gr.DrawRectangle(Pens.Black, startpunt.X, startpunt.Y, sz.Width, sz.Height);
+                //gr.DrawRectangle(Pens.Black, startpunt.X, startpunt.Y, sz.Width, sz.Height); ?????
                 startpunt.X += (int)sz.Width;
                 s.Invalidate();
 
+                //toevoegen Eigenschap!!
             }
         }
     }
 
     public abstract class TweepuntTool : StartpuntTool
     {
-        public ObjectVorm o = new ObjectVorm(); //eigen!
+        public ObjectVorm o = new ObjectVorm(); 
         
         public Rectangle Punten2Rechthoek(Point p1, Point p2)
         {
@@ -163,10 +143,6 @@ namespace SchetsEditor
             o.Rect(r);
             
             return r;
-
-            /*return new Rectangle(new Point(Math.Min(p1.X, p2.X), Math.Min(p1.Y, p2.Y))
-                                , new Size(Math.Abs(p1.X - p2.X), Math.Abs(p1.Y - p2.Y))
-                                );*/
         }
         public static Pen MaakPen(Brush b, int dikte)
         {
@@ -191,6 +167,7 @@ namespace SchetsEditor
             this.Compleet(s.MaakBitmapGraphics(), this.startpunt, p);
 
             
+            
             //eigen!!
             if (this.GetType().Name != "GumTool")
             {
@@ -211,6 +188,10 @@ namespace SchetsEditor
                     o.Toevoeg(s);
                 }
             }
+            else
+            { GumTool g = new GumTool();
+                g.Gum(p.X, p.Y, s); } //????
+                
             s.Invalidate();
         }
 
@@ -232,20 +213,6 @@ namespace SchetsEditor
         public override void Bezig(Graphics g, Point p1, Point p2)
         {
             g.DrawRectangle(MaakPen(kwast, 3), Punten2Rechthoek(p1, p2));
-
-
-            //eigen! groottte bepalen 
-            /*double Xgrootte;
-            Xgrootte = Math.Abs(p1.X - p2.X);
-
-            double Ygrootte;
-            Ygrootte = Math.Abs(p1.Y - p2.Y);
-
-            DoubleSize grootte = new DoubleSize(Xgrootte, Ygrootte);*/
-
-
-            //o.Eigenschap(this.GetType().Name, startpunt, kwast, Punten2Rechthoek(p1, p2)); //grootte
-            //Console.WriteLine("p" + Punten2Rechthoek(p1, p2));
         }
     }
 
@@ -287,10 +254,10 @@ namespace SchetsEditor
         public override void MuisLos(SchetsControl s, Point p)
         {
             
-            base.MuisLos(s, p);
+            base.MuisLos(s, p);  //twee keer muislos = 2 x gummen i guess
             
-            Gum(p.X, p.Y, s);
-            //Console.WriteLine("gum2");
+            //Gum(p.X, p.Y, s);
+            
         }
         public override void Bezig(Graphics g, Point p1, Point p2) //parameters? 
         {
@@ -315,8 +282,9 @@ namespace SchetsEditor
                     o.Haalweg(s, i);
                     //Console.WriteLine(s.lijst.Count);
                     Console.WriteLine("haalweggum");
+                    s.Invalidate();
                 }
-                else
+                else //magweg
                 {
                     Console.WriteLine("geen gum");
                     //Console.WriteLine(s.lijst[i].rect);
@@ -337,19 +305,6 @@ namespace SchetsEditor
         public override void Bezig(Graphics g, Point p1, Point p2)
         {
             g.DrawEllipse(MaakPen(kwast, 3), Punten2Rechthoek(p1, p2));
-
-            /*
-            double Xgrootte;
-            Xgrootte = Math.Abs(p1.X - p2.X);
-
-            double Ygrootte;
-            Ygrootte = Math.Abs(p1.Y - p2.Y);
-
-            DoubleSize grootte = new DoubleSize(Xgrootte, Ygrootte);
-
-            
-            //o.Eigenschap(this.GetType().Name, startpunt, kwast, Punten2Rechthoek(p1, p2)); //grootte
-            */
         }
 
     }
