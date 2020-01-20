@@ -6,14 +6,20 @@ namespace SchetsEditor
     public class Schets
     {
         private Bitmap bitmap;
-
+        Bitmap nieuw; 
         public Schets()
         {
             bitmap = new Bitmap(1, 1);
         }
         public Graphics BitmapGraphics
         {
-            get { return Graphics.FromImage(bitmap); }
+            get
+            {
+                return Graphics.FromImage(bitmap);
+                //Graphics g = Graphics.FromImage(bitmap);
+                //g.Clear(Color.White);
+                //return g;
+            }
         }
         public void VeranderAfmeting(Size sz)
         {
@@ -24,14 +30,17 @@ namespace SchetsEditor
                                          );
                 Graphics gr = Graphics.FromImage(nieuw);
                 gr.FillRectangle(Brushes.White, 0, 0, sz.Width, sz.Height);
-                gr.DrawImage(bitmap, 0, 0);
+                //gr.DrawImage(bitmap, 0, 0);
                 bitmap = nieuw;
             }
         }
-        public void Teken(Graphics gr) //weg?
+
+        public void NieuweBitmap() //eigen
         {
-            gr.DrawImage(bitmap, 0, 0);
-            gr.DrawEllipse(Pens.Black, 1, 2, 6, 6);
+            
+            nieuw = new Bitmap(bitmap.Size.Width, bitmap.Size.Height);
+            bitmap = nieuw;
+
         }
 
         public void TekenRecht(Graphics gr, Pen p, Rectangle r)
@@ -48,14 +57,15 @@ namespace SchetsEditor
 
         public void TekenLijn(Graphics gr, Pen p, Point p1, Point p2) //te hoekig!
         {
-            //gr.DrawImage(bitmap, 0, 0); 
+            gr.DrawImage(bitmap, 0, 0);
             gr.DrawLine(p, p1, p2);
         }
         public void TekenPen(Graphics gr, Pen p, Point p1, Point p2)
         {
+            gr.DrawImage(bitmap, 0, 0);
             gr.DrawLine(p, p1, p2); //denk ik
         }
-   
+
         public void TekenCirkel(Graphics gr, Pen p, Rectangle r)
         {
             gr.DrawImage(bitmap, 0, 0);
@@ -68,26 +78,29 @@ namespace SchetsEditor
             gr.FillEllipse(b, r);
         }
 
-        public void Weg()
+        public void TekenTekst(Graphics gr, Brush b, Point p1, String t)
         {
-            Graphics g = Graphics.FromImage(bitmap); 
-            Color c = Color.White;
-            g.Clear(c);
-            
+            gr.DrawImage(bitmap, 0, 0);
+            gr.DrawString(t, new Font("Tahoma", 40), new SolidBrush(Color.Black), p1.X, p1.Y);
         }
 
-        public void Schoon()
+
+
+        public void Weg()
+        {
+            Graphics g = Graphics.FromImage(bitmap);
+            Color c = Color.White;
+            g.Clear(c);
+        }
+
+        public void SchoonSchets()
         {
             Graphics gr = Graphics.FromImage(bitmap);
             Color c = Color.White;
             gr.Clear(c);
+
             //Graphics gr = Graphics.FromImage(bitmap);
             //gr.FillRectangle(Brushes.White, 0, 0, bitmap.Width, bitmap.Height);
-        }
-
-        public void Roteer()
-        {
-            bitmap.RotateFlip(RotateFlipType.Rotate90FlipNone);
         }
     }
 }

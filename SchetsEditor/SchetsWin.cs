@@ -19,19 +19,19 @@ namespace SchetsEditor
                                  , Assembly.GetExecutingAssembly()
                                  );
 
-        private void veranderAfmeting(object o, EventArgs ea)
+        private void veranderAfmeting(object o, EventArgs ea) 
         {
             schetscontrol.Size = new Size(this.ClientSize.Width - 70
                                           , this.ClientSize.Height - 50);
             paneel.Location = new Point(64, this.ClientSize.Height - 30);
         }
 
-        private void klikToolMenu(object obj, EventArgs ea)
+        public void klikToolMenu(object obj, EventArgs ea)  //waren private
         {
             this.huidigeTool = (ISchetsTool)((ToolStripMenuItem)obj).Tag;
         }
 
-        private void klikToolButton(object obj, EventArgs ea)
+        public void klikToolButton(object obj, EventArgs ea) //
         {
             this.huidigeTool = (ISchetsTool)((RadioButton)obj).Tag;
         }
@@ -65,6 +65,8 @@ namespace SchetsEditor
 
             schetscontrol = new SchetsControl();
             schetscontrol.Location = new Point(64, 10);
+            schetscontrol.BackColor = Color.White;               //!!
+
             schetscontrol.MouseDown += (object o, MouseEventArgs mea) =>
             {
                 vast = true;
@@ -162,10 +164,12 @@ namespace SchetsEditor
             this.Controls.Add(paneel);
 
             Button b; Label l; ComboBox cbb;
+            Button undo;
             b = new Button();
             b.Text = "Clear";
             b.Location = new Point(0, 0);
             b.Click += schetscontrol.Schoon;
+            
             paneel.Controls.Add(b);
 
             b = new Button();
@@ -176,11 +180,19 @@ namespace SchetsEditor
 
             l = new Label();
             l.Text = "Penkleur:";
-            l.Location = new Point(180, 3);
+            l.Location = new Point(220, 3);
             l.AutoSize = true;
             paneel.Controls.Add(l);
 
-            cbb = new ComboBox(); cbb.Location = new Point(240, 0);
+            undo = new Button();
+            undo.Text = "Undo";
+            undo.Location = new Point(165, 0);
+            undo.Size = new Size(40, 23);
+            undo.Click += schetscontrol.Undo;
+            paneel.Controls.Add(undo);
+
+
+            cbb = new ComboBox(); cbb.Location = new Point(270, 0);
             cbb.DropDownStyle = ComboBoxStyle.DropDownList;
             cbb.SelectedValueChanged += schetscontrol.VeranderKleur;
 
@@ -189,6 +201,13 @@ namespace SchetsEditor
 
             cbb.SelectedIndex = 8;
             paneel.Controls.Add(cbb);
+        }
+
+
+        public void opslaan(object o, EventArgs e)          //
+        {
+            
+            Hoofdscherm.opslaan(schetscontrol.lijst, e);
         }
     }
 }
