@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace SchetsEditor
 {
@@ -15,10 +16,7 @@ namespace SchetsEditor
         {
             get
             {
-                return Graphics.FromImage(bitmap);
-                //Graphics g = Graphics.FromImage(bitmap);
-                //g.Clear(Color.White);
-                //return g;
+                return Graphics.FromImage(bitmap);               
             }
         }
         public void VeranderAfmeting(Size sz)
@@ -37,10 +35,8 @@ namespace SchetsEditor
 
         public void NieuweBitmap() //eigen
         {
-            
             nieuw = new Bitmap(bitmap.Size.Width, bitmap.Size.Height);
             bitmap = nieuw;
-
         }
 
         public void TekenRecht(Graphics gr, Pen p, Rectangle r)
@@ -55,7 +51,7 @@ namespace SchetsEditor
             gr.FillRectangle(b, r);
         }
 
-        public void TekenLijn(Graphics gr, Pen p, Point p1, Point p2) //te hoekig!
+        public void TekenLijn(Graphics gr, Pen p, Point p1, Point p2)
         {
             gr.DrawImage(bitmap, 0, 0);
             gr.DrawLine(p, p1, p2);
@@ -63,13 +59,14 @@ namespace SchetsEditor
         public void TekenPen(Graphics gr, Pen p, Point p1, Point p2)
         {
             gr.DrawImage(bitmap, 0, 0);
-            gr.DrawLine(p, p1, p2); //denk ik
+            gr.DrawLine(p, p1, p2); 
         }
 
         public void TekenCirkel(Graphics gr, Pen p, Rectangle r)
         {
             gr.DrawImage(bitmap, 0, 0);
             gr.DrawEllipse(p, r);
+            
         }
 
         public void TekenCirkelVol(Graphics gr, Brush b, Rectangle r)
@@ -81,11 +78,16 @@ namespace SchetsEditor
         public void TekenTekst(Graphics gr, Brush b, Point p1, String t)
         {
             gr.DrawImage(bitmap, 0, 0);
-            gr.DrawString(t, new Font("Tahoma", 40), new SolidBrush(Color.Black), p1.X, p1.Y);
+            gr.DrawString(t, new Font("Tahoma", 40), b, p1.X, p1.Y);
         }
 
 
+        public void Roteer()
+        {
+            bitmap.RotateFlip(RotateFlipType.Rotate90FlipNone);
+        }
 
+        
         public void Weg()
         {
             Graphics g = Graphics.FromImage(bitmap);
@@ -98,9 +100,6 @@ namespace SchetsEditor
             Graphics gr = Graphics.FromImage(bitmap);
             Color c = Color.White;
             gr.Clear(c);
-
-            //Graphics gr = Graphics.FromImage(bitmap);
-            //gr.FillRectangle(Brushes.White, 0, 0, bitmap.Width, bitmap.Height);
         }
     }
 }

@@ -31,55 +31,50 @@ namespace SchetsEditor
 
     }
 
-    
+
     public class ObjectVorm
     {
         public string naam;
+        public string tekst;
         public Point start;
         public Point eind;
-        public Brush kwast;
-        public Pen pen;
         public Rectangle rect;
-        public string tekst;
+        public Color kleur;
+        public int dikte;
 
-
-        public void Eigenschap(String n, Pen p, Rectangle r)
+        //volrechthoek en volcirkel
+        public void Eigenschap(String n, Color k, Rectangle r)
         {
             naam = n;
             rect = r;
-            pen = p;
+            kleur = k;
         }
-
-
-        public void Eigenschap(String n, Brush b, Rectangle r)
+        
+        //cirkel en rechthoek
+        public void Eigenschap(String n, Color k, Rectangle r, int d)
         {
             naam = n;
             rect = r;
-            kwast = b;
+            kleur = k;
+            dikte = d;
         }
 
-        public void Eigenschap(String n, Brush b, Point p1, Point p2)
+        //pen en lijn
+        public void Eigenschap(String n, Color k, Point p1, Point p2, int d)
         {
             naam = n;
             start = p1;
             eind = p2;
-            kwast = b;
+            kleur = k;
+            dikte = d;
         }
-
-        public void Eigenschap(String n, Pen p, Point p1, Point p2)
+        //letters
+        public void Eigenschap(String n, Color k, Point p1, string t)
         {
             naam = n;
             start = p1;
-            eind = p2;
-            pen = p;
-        }
-
-        public void Eigenschap(String n, Pen p, Point p1, string t) 
-        {
-            naam = n;
-            start = p1;
-            pen = p;
             tekst = t;
+            kleur = k;
         }
 
         public void Rect(Rectangle xr) //? weg?
@@ -90,15 +85,11 @@ namespace SchetsEditor
         public void Toevoeg(SchetsControl s)
         {
             s.lijst.Add(this);
-            //s.VoegToe(this); //alles toevoegen aan de lijst
         }
 
         public void Haalweg(SchetsControl s, int i)
         {
-            //s.Weghaal(s.lijst[i]);
             s.lijst.RemoveAt(i);
-            
-            Console.WriteLine("weggehaald");
         }
     }
 
@@ -117,36 +108,22 @@ namespace SchetsEditor
                 Font font = new Font("Tahoma", 40);
                 string tekst = c.ToString();
                 SizeF sz = new SizeF(30, 64);
-                //gr.MeasureString(tekst, font, this.startpunt, StringFormat.GenericTypographic);
                 gr.DrawString(tekst, font, kwast,
                                               this.startpunt, StringFormat.GenericTypographic);
                 //gr.DrawRectangle(Pens.Black, startpunt.X, startpunt.Y, sz.Width, sz.Height); ?????
                 startpunt.X += (int)sz.Width;
 
-                Console.WriteLine(startpunt.X + " + "  + sz);
-                
                 var obj = new ObjectVorm();
-                obj.Eigenschap(this.GetType().Name, new Pen(kwast), new Point(startpunt.X, startpunt.Y), tekst);//, this.startpunt, tekst);
+                obj.Eigenschap(this.GetType().Name, s.PenKleur, new Point(startpunt.X, startpunt.Y), tekst);
                 obj.Toevoeg(s);
 
                 s.Invalidate();
             }
         }
 
-        public override void MuisLos(SchetsControl s, Point p) //eigen
+        public override void MuisLos(SchetsControl s, Point p) 
         {
-            base.MuisLos(s, p);
-            Console.WriteLine("hier"
-                );
-            /*if (this.GetType().Name == "GumTool")
-            {
-                Console.WriteLine(p.X + " ... " + p.Y);
-                GumTool g = new GumTool();
-                //g.Gum(p.X, p.Y, s);
-                
-                s.Invalidate();
-            }*/
-            
+            base.MuisLos(s, p);        
         }
     }
 
@@ -192,20 +169,20 @@ namespace SchetsEditor
                 if (this.GetType().Name == "VolRechthoekTool" || this.GetType().Name == "VolCirkelTool")
                 {
                     var obj = new ObjectVorm(); //nieuw object gemaakt anders wordt de andere overschreven
-                    obj.Eigenschap(this.GetType().Name, kwast, Punten2Rechthoek(this.startpunt, p));
+                    obj.Eigenschap(this.GetType().Name, s.PenKleur, Punten2Rechthoek(this.startpunt, p));
                     obj.Toevoeg(s);
                 }
                 else if (this.GetType().Name == "PenTool" || this.GetType().Name == "LijnTool")
                 {
                     var obj = new ObjectVorm();
-                    obj.Eigenschap(this.GetType().Name, MaakPen(kwast, 2), this.startpunt, p);
+                    obj.Eigenschap(this.GetType().Name, s.PenKleur, this.startpunt, p, s.penDikte);
                     obj.Toevoeg(s);
                 }
 
-                else
+                else //rechthoektool en cirkeltool
                 {
                     var obj = new ObjectVorm();
-                    obj.Eigenschap(this.GetType().Name, MaakPen(kwast, 2), Punten2Rechthoek(this.startpunt, p));
+                    obj.Eigenschap(this.GetType().Name, s.PenKleur, Punten2Rechthoek(this.startpunt, p), s.penDikte);
                     obj.Toevoeg(s);
                 }
             }
@@ -213,7 +190,7 @@ namespace SchetsEditor
             {
                 GumTool g = new GumTool();
                 g.Gum(p.X, p.Y, s);
-            } 
+            }
 
             s.Invalidate();
         }
@@ -270,110 +247,6 @@ namespace SchetsEditor
         }
     }
 
-    public class GumTool : TweepuntTool 
-    {
-        public override string ToString() { return "gum"; }
-
-        public override void MuisLos(SchetsControl s, Point p)
-        {
-
-            base.MuisLos(s, p);  
-
-        }
-        public override void Bezig(Graphics g, Point p1, Point p2) 
-        {
-            
-        }
-
-        public void Gum(int px, int py, SchetsControl s)
-        {
-            Console.WriteLine($"COUNT {s.lijst.Count}");
-            for (int i = 0; i < s.lijst.Count; i++)
-            {
-                if (s.lijst[i].naam == "LijnTool" || s.lijst[i].naam == "PenTool")
-                {
-
-
-                }
-                else if (s.lijst[i].naam == "TekstTool")
-                {
-                    if (px > s.lijst[i].start.X && px < s.lijst[i].start.X + 30 &&
-                        py > s.lijst[i].start.Y && py < s.lijst[i].start.Y + 64)
-                    {
-                        o.Haalweg(s, i);
-                        i--;
-                    }
-                }
-                else if (s.lijst[i].naam == "VolCirkelTool" )//|| s.lijst[i].naam == "CirkelTool") 
-                {
-                    Console.WriteLine("hierzo");
-                    int y;
-                    int y2;
-                    int x = s.lijst[i].rect.X + (s.lijst[i].rect.Width * (1/ 4));
-                    int x2 = s.lijst[i].rect.X + (s.lijst[i].rect.Width * (3/4));
-                    int x3 = s.lijst[i].rect.X + (s.lijst[i].rect.Width * (1 / 4));
-                    int x4 = s.lijst[i].rect.X + (s.lijst[i].rect.Width * (3 / 4));
-
-                    for (y = s.lijst[i].rect.Y; y < ((s.lijst[i].rect.Height / 4) + s.lijst[i].rect.Y); y++)
-                    { x--; x2++;
-                        for (y2 = s.lijst[i].rect.Height + s.lijst[i].rect.Y; y2 < ((s.lijst[i].rect.Height * 3 / 4) + s.lijst[i].rect.Y); y2--)
-                        {
-                            x3--; x4++;
-                            Console.WriteLine(x + " " + x2 + "  " + y + "  " + y2);
-                            if (px > x && px < x2 && px > x3 && px < x4 && py > y && py > y2)
-                            {
-                                Console.WriteLine("xx");
-                                o.Haalweg(s, i); i--;
-                            }
-                        }
-                    }
-                        
-                    
-
-                    
-                    /*f (px > x && px < x2 && px > x3 && px < x4 && py > y && py > y2)
-                    {
-                        Console.WriteLine("xx");
-                        o.Haalweg(s, i); i--;
-                        //if (s.lijst[i].naam == "VolCirkelTool")
-
-                            /*Console.WriteLine("print");
-                            if (s.lijst[i].naam == "CirkelTool")
-                            {
-                                if (px < s.lijst[i].rect.X + s.lijst[i].rect.X * (1 / 4) && px > s.lijst[i].rect.X + s.lijst[i].rect.X * (3 / 4)
-                                    && py < s.lijst[i].rect.Y + s.lijst[i].rect.Y * (1 / 4) && py > s.lijst[i].rect.X + s.lijst[i].rect.Y * (3 / 4))
-                                { o.Haalweg(s, i); i--; }
-                            }
-                        //else {  }
-
-                    }*/
-                       
-                        
-                }
-
-                else 
-                {
-                    if (px > s.lijst[i].rect.X && px < (s.lijst[i].rect.Width + s.lijst[i].rect.X) &&
-                      py > s.lijst[i].rect.Y && py < (s.lijst[i].rect.Height + s.lijst[i].rect.Y))
-                    {
-                        if (s.lijst[i].naam == "VolRechthoekTool")
-                        {
-                            o.Haalweg(s, i);
-
-                            Console.WriteLine($"haalweggum {i}");
-                            i--;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"niet weggehaald {i}");
-                    }
-                }
-            }
-
-            s.Invalidate();
-        }
-    }
 
     public class CirkelTool : RechthoekTool
     {
@@ -392,6 +265,119 @@ namespace SchetsEditor
         public override void Bezig(Graphics g, Point p1, Point p2)
         {
             g.FillEllipse(kwast, Punten2Rechthoek(p1, p2));
+        }
+    }
+
+
+    public class GumTool : TweepuntTool
+    {
+        public override string ToString() { return "gum"; }
+
+        public override void MuisLos(SchetsControl s, Point p)
+        {
+            base.MuisLos(s, p);
+        }
+        public override void Bezig(Graphics g, Point p1, Point p2)
+        {
+        }
+
+        public void Gum(int px, int py, SchetsControl s)
+        {
+            for (int i = 0; i < s.lijst.Count; i++)
+            {
+                if (s.lijst[i].naam == "LijnTool" || s.lijst[i].naam == "PenTool")
+                {
+                    double startX = s.lijst[i].start.X;
+                    double startY = s.lijst[i].start.Y;
+                    double eindX = s.lijst[i].eind.X;
+                    double eindY = s.lijst[i].eind.Y;
+                    
+                    double marge = 8;
+                    double varY = eindY - startY;
+                    double varX = eindX - startX;
+
+                    //formule Distance from a point to a line
+                    //https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line 
+
+                    double afstand = Math.Abs(varY * px - varX * py + eindX * startY - eindY * startX)
+                        / Math.Sqrt(Math.Pow(varY, 2) + Math.Pow(varX, 2));
+
+                    if (afstand <= marge)
+                    {
+                        o.Haalweg(s, i);
+                    }
+                }
+
+                else if (s.lijst[i].naam == "TekstTool")
+                {
+                    if (px > s.lijst[i].start.X && px < s.lijst[i].start.X + 30 &&
+                        py > s.lijst[i].start.Y && py < s.lijst[i].start.Y + 64)
+                    {
+                        o.Haalweg(s, i);
+                    }
+                }
+                else if (s.lijst[i].naam == "VolCirkelTool" || s.lijst[i].naam == "CirkelTool")
+                {
+                    int straalX = s.lijst[i].rect.Width / 2;
+                    int straalY = s.lijst[i].rect.Height / 2;
+                    
+                    int x = px - s.lijst[i].rect.X - straalX; //verhouding fixen 
+                    int y = py - s.lijst[i].rect.Y - straalY;
+
+                    //formule voor ellipse x^2/a^2 + y^2/b^2 =1 
+                    //x is de klik x, a is de x straal 
+                    //als de formule kleiner is dan een valt een punt binnen de ellipse 
+                    double binnenCirkel = Math.Pow(x, 2) / Math.Pow(straalX, 2) + Math.Pow(y, 2) / Math.Pow(straalY, 2);
+
+                    if (s.lijst[i].naam == "CirkelTool")
+                    {
+                        if (binnenCirkel > 0.95 && binnenCirkel < 1.05)
+                        {
+                            o.Haalweg(s, i);
+                        }
+                    }
+                    else if (s.lijst[i].naam == "VolCirkelTool")
+                    {
+                        if (binnenCirkel <= 1)
+                        {
+                            o.Haalweg(s, i);
+                        }                     
+                    }
+                }
+                else if (s.lijst[i].naam == "RechthoekTool" || s.lijst[i].naam == "VolRechthoekTool")
+                {
+                    int rectX = s.lijst[i].rect.X;
+                    int rectY = s.lijst[i].rect.Y;
+                    int rectWidth = s.lijst[i].rect.Width;
+                    int rectHeight = s.lijst[i].rect.Height;
+                    int marge = 10;
+
+                    if (px > rectX && px < (rectWidth + rectX) && py > rectY
+                        && py < (rectHeight + rectY))
+                    {
+                        if (s.lijst[i].naam == "VolRechthoekTool")
+                        {
+                            o.Haalweg(s, i);
+                        }
+
+                        else if (s.lijst[i].naam == "RechthoekTool")
+                        {
+                            if ((px > rectX && px < (rectWidth + rectX) && py > rectY
+                                && py < (rectHeight + rectY) && !(px > rectX + marge
+                                && px < (rectWidth + rectX) - marge &&py > rectY + marge
+                                && py < (rectHeight + rectY - marge))))
+                            {
+                                o.Haalweg(s, i);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"niet weggehaald {i}");
+                }
+            }
+            s.Invalidate();
         }
     }
 }

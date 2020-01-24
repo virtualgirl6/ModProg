@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Resources;
+using System.IO;
+using System.Linq;
 
 namespace SchetsEditor
 {
@@ -60,7 +62,9 @@ namespace SchetsEditor
                     deKleuren.Add(p.Name);
             }
 
-            this.ClientSize = new Size(700, 500);
+            int[] Diktes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            
+            this.ClientSize = new Size(700, 520);
             huidigeTool = deTools[0];
 
             schetscontrol = new SchetsControl();
@@ -90,13 +94,13 @@ namespace SchetsEditor
             this.Controls.Add(schetscontrol);
 
             menuStrip = new MenuStrip();
-            menuStrip.Visible = false;
+            menuStrip.Visible = true;
             this.Controls.Add(menuStrip);
             this.maakFileMenu();
             this.maakToolMenu(deTools);
-            this.maakAktieMenu(deKleuren); //!
+            this.maakAktieMenu(deKleuren, Diktes);          //!
             this.maakToolButtons(deTools);
-            this.maakAktieButtons(deKleuren); //!
+            this.maakAktieButtons(deKleuren, Diktes);       //!
             this.Resize += this.veranderAfmeting;
             this.veranderAfmeting(null, null);
         }
@@ -105,7 +109,9 @@ namespace SchetsEditor
         {
             ToolStripMenuItem menu = new ToolStripMenuItem("File");
             menu.MergeAction = MergeAction.MatchOnly;
-            menu.DropDownItems.Add("Sluiten", null, this.afsluiten);
+            menu.DropDownItems.Add("Openen", null, this.openen);        //!!
+            menu.DropDownItems.Add("Opslaan", null, this.opslaan);            //!!
+
             menuStrip.Items.Add(menu);
         }
 
@@ -124,15 +130,19 @@ namespace SchetsEditor
             menuStrip.Items.Add(menu);
         }
 
-        private void maakAktieMenu(List<string> kleuren) //!!!
+        private void maakAktieMenu(List<string> kleuren, int[]diktes) //!!!
         {
             ToolStripMenuItem menu = new ToolStripMenuItem("Aktie");
             menu.DropDownItems.Add("Clear", null, schetscontrol.Schoon);
             menu.DropDownItems.Add("Roteer", null, schetscontrol.Roteer);
             ToolStripMenuItem submenu = new ToolStripMenuItem("Kies kleur");
+            ToolStripMenuItem submenu1 = new ToolStripMenuItem("Kies dikte");
             foreach (string k in kleuren)
                 submenu.DropDownItems.Add(k, null, schetscontrol.VeranderKleurViaMenu);
+            foreach (int i in diktes)
+                submenu1.DropDownItems.Add(i.ToString(), null, schetscontrol.VeranderDikteViaMenu);
             menu.DropDownItems.Add(submenu);
+            menu.DropDownItems.Add(submenu1);
             menuStrip.Items.Add(menu);
         }
 
@@ -144,7 +154,7 @@ namespace SchetsEditor
                 RadioButton b = new RadioButton();
                 b.Appearance = Appearance.Button;
                 b.Size = new Size(45, 62);
-                b.Location = new Point(10, 10 + t * 62);
+                b.Location = new Point(10, 25 + t * 62);
                 b.Tag = tool;
                 b.Text = tool.ToString();
                 b.Image = (Image)resourcemanager.GetObject(tool.ToString());
@@ -157,14 +167,14 @@ namespace SchetsEditor
             }
         }
 
-        private void maakAktieButtons(List<string> kleuren)//(String[] kleuren)
+        private void maakAktieButtons(List<string> kleuren, int[]diktes)
         {
             paneel = new Panel();
             paneel.Size = new Size(600, 24);
             this.Controls.Add(paneel);
 
-            Button b; Label l; ComboBox cbb;
-            Button undo;
+            Button b; Label l, ld; ComboBox cbbK, cbbD;
+            Button undo, c;
             b = new Button();
             b.Text = "Clear";
             b.Location = new Point(0, 0);
@@ -172,17 +182,23 @@ namespace SchetsEditor
             
             paneel.Controls.Add(b);
 
-            b = new Button();
-            b.Text = "Rotate";
-            b.Location = new Point(80, 0);
-            b.Click += schetscontrol.Roteer;
-            paneel.Controls.Add(b);
+            c = new Button();
+            c.Text = "Rotate";
+            c.Location = new Point(80, 0);
+            c.Click += schetscontrol.Roteer;
+            paneel.Controls.Add(c);
 
             l = new Label();
             l.Text = "Penkleur:";
             l.Location = new Point(220, 3);
             l.AutoSize = true;
             paneel.Controls.Add(l);
+
+            ld = new Label();
+            ld.Text = "Pendikte:";
+            ld.Location = new Point(400, 3);
+            ld.AutoSize = true;
+            paneel.Controls.Add(ld);
 
             undo = new Button();
             undo.Text = "Undo";
@@ -191,23 +207,158 @@ namespace SchetsEditor
             undo.Click += schetscontrol.Undo;
             paneel.Controls.Add(undo);
 
-
-            cbb = new ComboBox(); cbb.Location = new Point(270, 0);
-            cbb.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbb.SelectedValueChanged += schetscontrol.VeranderKleur;
+            cbbK = new ComboBox(); cbbK.Location = new Point(270, 0);
+            cbbK.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbK.SelectedValueChanged += schetscontrol.VeranderKleur;
 
             foreach (string k in kleuren)
-                cbb.Items.Add(k);
+                cbbK.Items.Add(k);
 
-            cbb.SelectedIndex = 8;
-            paneel.Controls.Add(cbb);
+            cbbK.SelectedIndex = 8;
+            paneel.Controls.Add(cbbK);
+
+            cbbD = new ComboBox(); cbbD.Location = new Point(450, 0);
+            cbbD.Size = new Size(40, 20);
+            cbbD.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbD.SelectedValueChanged += schetscontrol.VeranderDikte;
+
+            foreach (int d in diktes)
+                cbbD.Items.Add(d);
+
+            cbbD.SelectedIndex = 2;
+            paneel.Controls.Add(cbbD);
+        }
+        
+
+        public void opslaan(object o, EventArgs e)
+        {
+            SaveFileDialog opslaanfile = new SaveFileDialog();
+            opslaanfile.Filter = "Tekstfiles|*.txt|Alle files|*.*";
+            opslaanfile.Title = "Schets opslaan als...";
+
+            if (opslaanfile.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(opslaanfile.FileName);
+
+                foreach (string s in maakStringlijst(schetscontrol.lijst))
+                    { sw.Write(s); }
+                
+                sw.Close();
+            }
         }
 
-
-        public void opslaan(object o, EventArgs e)          //
+        public void openen(object sender, EventArgs e)
         {
+            List<string> filelijst = new List<string>();
+            OpenFileDialog openfile = new OpenFileDialog();
+            if (openfile.ShowDialog() == DialogResult.OK)
+            {
+                StreamReader sr = new StreamReader(openfile.FileName);
+                string filetekst = sr.ReadToEnd();
+
+                filelijst = filetekst.Split('\n').ToList();
+
+                sr.Close();
+                
+                schetscontrol.lijst = maakObjectLijst(filelijst);
+            }
+            schetscontrol.Invalidate();
+        }
+
+        public List<string> maakStringlijst(List<ObjectVorm> l)
+        {
+            List<string> stringlijst = new List<string>();
+            string naam, kleur, rect, start, eind, tekst, dikte;
+
+            for (int i = 0; i < schetscontrol.lijst.Count; i++)
+            {
+                naam = schetscontrol.lijst[i].naam;
+
+                //kleur ToString geeft dit terug: Color [Black], dit moet ingekort worden
+                //naar slechts de kleur (Black)
+
+                kleur = schetscontrol.lijst[i].kleur.ToString();
+                string[] kleurarray = kleur.Split(' ');
+                kleur = kleurarray[1].Substring(1, kleurarray[1].Length - 2);
+                
+                rect = schetscontrol.lijst[i].rect.Location.X.ToString() + " "
+                    + schetscontrol.lijst[i].rect.Location.Y.ToString() + " " +
+                    schetscontrol.lijst[i].rect.Size.Width.ToString() + " " +
+                    schetscontrol.lijst[i].rect.Size.Height.ToString();
+
+                start = schetscontrol.lijst[i].start.X.ToString() + " " +
+                    schetscontrol.lijst[i].start.Y.ToString();
+
+                eind = schetscontrol.lijst[i].eind.X.ToString() + " " +
+                    schetscontrol.lijst[i].eind.Y.ToString();
+
+                tekst = schetscontrol.lijst[i].tekst;
+
+                dikte = schetscontrol.lijst[i].dikte.ToString();
+
+                if (naam == "VolRechthoekTool" || naam == "RechthoekTool" ||
+                    naam == "CirkelTool" || naam == "VolCirkelTool")
+                    stringlijst.Add(naam + " " + kleur + " " + rect + " " + dikte + '\n');
+                else if (naam == "PenTool" || naam == "LijnTool")
+                    stringlijst.Add(naam + " " + kleur + " " + start + " " + eind + " " + dikte +'\n');
+                else if (naam == "TekstTool")
+                    stringlijst.Add(naam + " " + kleur + " " + start + " " + tekst + '\n');
+            }
+            return stringlijst;
+        }
+
+        public List<ObjectVorm> maakObjectLijst(List<string> stringl)
+        {
+            List<ObjectVorm> objectlijst = new List<ObjectVorm>();
             
-            Hoofdscherm.opslaan(schetscontrol.lijst, e);
+            foreach (string s in stringl)
+            {
+                String[] sArray = s.Split(' ');
+
+                if (sArray[0] == "VolRechthoekTool" || sArray[0] == "VolCirkelTool")                 
+                {
+                    var obj = new ObjectVorm();
+
+                    obj.Eigenschap(sArray[0], Color.FromName(sArray[1]),
+                    new Rectangle(new Point(int.Parse(sArray[2]), int.Parse(sArray[3])),
+                    new Size(int.Parse(sArray[4]), int.Parse(sArray[5]))));
+
+                    objectlijst.Add(obj);
+                }
+                else if  (sArray[0] == "RechthoekTool" || sArray[0] == "CirkelTool")
+                {
+                    var obj = new ObjectVorm();
+
+                    obj.Eigenschap(sArray[0], Color.FromName(sArray[1]),
+                    new Rectangle(new Point(int.Parse(sArray[2]), int.Parse(sArray[3])),
+                    new Size(int.Parse(sArray[4]), int.Parse(sArray[5]))), int.Parse(sArray[6]));
+
+                    objectlijst.Add(obj);
+                }
+
+                else if (sArray[0] == "PenTool" || sArray[0] == "LijnTool")
+                {
+                    var obj = new ObjectVorm();
+
+                    obj.Eigenschap(sArray[0], Color.FromName(sArray[1]),
+                    new Point(int.Parse(sArray[2]), int.Parse(sArray[3])),
+                    new Point(int.Parse(sArray[4]), int.Parse(sArray[5])), int.Parse(sArray[6]));
+
+                    objectlijst.Add(obj);
+                }
+
+                else if (sArray[0] == "TekstTool")
+                {
+                    var obj = new ObjectVorm();
+
+                    obj.Eigenschap(sArray[0], Color.FromName(sArray[1]),
+                    new Point(int.Parse(sArray[2]), int.Parse(sArray[3])),
+                    sArray[4]);
+
+                    objectlijst.Add(obj);
+                }
+            }
+                return objectlijst;
         }
     }
 }

@@ -10,12 +10,17 @@ namespace SchetsEditor
     {
         private Schets schets;
         private Color penkleur;
+        public int penDikte = 3;
         public List<ObjectVorm> lijst = new List<ObjectVorm>(); //misschien de new in tekenLijst zetten
-        int roteer;
 
         public Color PenKleur
         {
             get { return penkleur; }
+        }
+
+        public int PenDikte
+        {
+            get { return penDikte; }
         }
         public Schets Schets
         {
@@ -24,14 +29,16 @@ namespace SchetsEditor
 
         public SchetsControl()
         {
+
+
             this.BorderStyle = BorderStyle.Fixed3D;
             this.schets = new Schets();
             this.Paint += this.tekenLijst;
 
             this.Resize += this.veranderAfmeting;
             this.veranderAfmeting(null, null);
-
-            roteer = 0;
+            
+            
         }
 
         public void tekenLijst(object o, PaintEventArgs pea) //weet niet of dit zo moet. tekenen wat op de lijst staat
@@ -46,30 +53,26 @@ namespace SchetsEditor
                 naam = lijst[i].naam;
 
                 if (naam == "CirkelTool")
-                    schets.TekenCirkel(pea.Graphics, lijst[i].pen, lijst[i].rect);
+                    schets.TekenCirkel(pea.Graphics, new Pen(lijst[i].kleur, lijst[i].dikte), lijst[i].rect);
 
                 if (naam == "VolCirkelTool")
-                    schets.TekenCirkelVol(pea.Graphics, lijst[i].kwast, lijst[i].rect);
+                    schets.TekenCirkelVol(pea.Graphics, new SolidBrush(lijst[i].kleur), lijst[i].rect);
 
                 if (naam == "RechthoekTool")
-                    schets.TekenRecht(pea.Graphics, lijst[i].pen, lijst[i].rect);
+                    schets.TekenRecht(pea.Graphics, new Pen(lijst[i].kleur, lijst[i].dikte), lijst[i].rect);
 
-                if (naam == "VolRechthoekTool")
-                    schets.TekenRechtVol(pea.Graphics, lijst[i].kwast, lijst[i].rect);
-
+                if (naam == "VolRechthoekTool")               
+                    schets.TekenRechtVol(pea.Graphics, new SolidBrush(lijst[i].kleur), lijst[i].rect);
+                
                 if (naam == "LijnTool")
-                    schets.TekenLijn(pea.Graphics, lijst[i].pen, lijst[i].start, lijst[i].eind);
+                    schets.TekenLijn(pea.Graphics, new Pen(lijst[i].kleur, lijst[i].dikte), lijst[i].start, lijst[i].eind);
 
                 if (naam == "PenTool")
-                    schets.TekenLijn(pea.Graphics, lijst[i].pen, lijst[i].start, lijst[i].eind);
+                    schets.TekenLijn(pea.Graphics, new Pen(lijst[i].kleur, lijst[i].dikte), lijst[i].start, lijst[i].eind);
 
                 if (naam == "TekstTool")
-                    schets.TekenTekst(pea.Graphics, lijst[i].kwast, lijst[i].start, lijst[i].tekst);
-
+                    schets.TekenTekst(pea.Graphics, new SolidBrush(lijst[i].kleur), lijst[i].start, lijst[i].tekst);
             }
-            Console.WriteLine($"PAINT {DateTime.Now.Millisecond}");
-            //.Graphics.Clear(Color.);
-            //pea.Graphics.Flush();
         }
 
        
@@ -101,69 +104,12 @@ namespace SchetsEditor
 
         public void Roteer(object o, EventArgs ea)
         {
-            string naam;
+            schets.VeranderAfmeting(new Size(this.ClientSize.Height, this.ClientSize.Width));
+            schets.Roteer();
+            this.Invalidate();
             
-            int startx, starty, eindx, eindy, sizex, sizey;
-            for (int i = 0; i < lijst.Count; i++)
-            {
-                naam = lijst[i].naam;
-                startx = lijst[i].start.X;
-                starty = lijst[i].start.Y;
+         }
 
-                if (naam == "LijnTool" || naam == "PenTool")
-                {
-                    //startx = lijst[i].start.X;
-                    //starty = lijst[i].start.Y;
-
-                    lijst[i].start.X = starty;
-                    lijst[i].start.Y = startx;
-
-                    eindx = lijst[i].eind.X;
-                    eindy = lijst[i].eind.Y;
-                    lijst[i].eind.X = eindy;
-                    lijst[i].eind.Y = eindx;
-                }
-
-                else if (naam == "TekstTool")
-                {
-                    //startx = lijst[i].start.X;
-                    //starty = lijst[i].start.Y;
-                    lijst[i].start.X = starty;
-                    lijst[i].start.Y = startx;
-                }
-
-                else
-                {
-                    if (roteer % 2 != 0)
-                    {
-                        Console.WriteLine("oneven");
-                        startx = lijst[i].rect.X;
-                        starty = lijst[i].rect.Y;
-                        lijst[i].rect.X = starty;
-                        lijst[i].rect.Y = startx;
-
-                        sizex = lijst[i].rect.Width;
-                        sizey = lijst[i].rect.Height;
-                        lijst[i].rect.Width = sizey;
-                        lijst[i].rect.Height = sizex;
-                    }
-                    else
-                    {
-                        Console.WriteLine("even"); 
-                        lijst[i].rect.X = startx;
-                        lijst[i].rect.Y = starty;
-                        lijst[i].rect.X = this.Width - lijst[i].rect.X - lijst[i].rect.Width;
-
-                    }
-
-                }
-
-                roteer++;
-                Console.WriteLine(roteer);
-            }
-                
-                this.Invalidate();
-        }
         public void VeranderKleur(object obj, EventArgs ea)
         {
             string kleurNaam = ((ComboBox)obj).Text;
@@ -173,6 +119,17 @@ namespace SchetsEditor
         {
             string kleurNaam = ((ToolStripMenuItem)obj).Text;
             penkleur = Color.FromName(kleurNaam);
+        }
+
+        public void VeranderDikte(object obj, EventArgs ea)
+        {
+            penDikte = int.Parse(((ComboBox)obj).Text);
+
+        }
+        public void VeranderDikteViaMenu(object obj, EventArgs ea)
+        {
+            penDikte = int.Parse(((ToolStripMenuItem)obj).Text);
+
         }
     }
 }
