@@ -62,7 +62,7 @@ namespace SchetsEditor
                     deKleuren.Add(p.Name);
             }
 
-            int[] Diktes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            int[] Diktes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20 };
             
             this.ClientSize = new Size(700, 520);
             huidigeTool = deTools[0];
@@ -207,6 +207,7 @@ namespace SchetsEditor
             undo.Click += schetscontrol.Undo;
             paneel.Controls.Add(undo);
 
+            //combobox Kleur
             cbbK = new ComboBox(); cbbK.Location = new Point(270, 0);
             cbbK.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbK.SelectedValueChanged += schetscontrol.VeranderKleur;
@@ -217,6 +218,7 @@ namespace SchetsEditor
             cbbK.SelectedIndex = 8;
             paneel.Controls.Add(cbbK);
 
+            //combobox Dikte
             cbbD = new ComboBox(); cbbD.Location = new Point(450, 0);
             cbbD.Size = new Size(40, 20);
             cbbD.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -274,8 +276,8 @@ namespace SchetsEditor
             {
                 naam = schetscontrol.lijst[i].naam;
 
-                //kleur ToString geeft dit terug: Color [Black], dit moet ingekort worden
-                //naar slechts de kleur (Black)
+                //kleur ToString geeft dit terug: "Color [Black]", dit moet ingekort worden
+                //naar slechts de kleur "Black"
 
                 kleur = schetscontrol.lijst[i].kleur.ToString();
                 string[] kleurarray = kleur.Split(' ');
